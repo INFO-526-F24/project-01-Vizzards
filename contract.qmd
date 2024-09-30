@@ -1,0 +1,97 @@
+Team Project Contract
+  Project Title: IOT Infrastructure behaviour during various Network Attacks
+
+Team Members:
+  Vik Ruhil, vikruhil@arizona.edu
+  Yash Sharma, yashsharma28@arizona.edu
+  Raghav Upadhyay, raghavupadhyay@arizona.edu
+  Partha Vemuri, parthav@arizona.edu
+  Chaitanya Suralkar, chaitanyas@arizona.edu
+  Smit Shah, smitshah@arizona.edu
+  Tushar Shrivastava, tshrivastava@arizona.edu
+
+Project Overview
+  Project Description: A comprehencive view of the IOT network infrastructure during various types of network attacks e.g. DDOS, man in middle, Arp flood etc.
+  Objective of the project is to monitor the behaviour of network parameters during a network attack vs normal traffic flow. The project will outline which parameters
+  are effected during an active network attack e.g. during an arp flood the broadcast traffic which is icmp type of protocol will see high jump in fwd_pkts_tot/bwd_pkts_tot etc.
+  Expected Deliverables: 
+      index.qmd
+      about.qmd
+      contract.qmd
+      proposal.qmd
+      _quarto.yml
+      Project-01.Rproj
+      Presnetation.pdf
+      Final report pdf
+
+Team Goals
+  Project Goals: Few of the goals that will be achieved during this project are as follows-
+      1. Understand the Software development Life Cycle (SDLC). As our team is using Jira to track our work progress and follow Agile methodology.
+      2. How to follow project management as we have a dedicated scrum master in our team. 
+      3. Understand the workflow of creating a R project.
+      4. Details and in depth use of R packages. This includes various visualization methods to keep plots within data-to-ink ratio.
+      5. Our team goal is go through consensus process and replicating real world team decision making process.
+      6. Team will go through story creation based on data and understand how to come up with meaningful questions.
+      7. Our team goal is to reproduce an industry standard report that can be presented to stakeholders.
+      8. Team will be able to present the project confidently and answers questions initialy decided between team members.
+      9. Team goal is to understand IOT networks and network as standalone technology for this project.
+      10. Team will understand the network attacks and how that impacts the IOT infrastructure.
+
+  Learning Objectives: 
+      1. Agile Methodology
+      2. Project Management
+      3. R language and packages
+      4. Team work
+      5. Time management
+      6. Visualization and analysis using R
+      7. Research meaningful questions
+      8. Exploratory Data Analysis
+      9. Data Manipulation
+      10. Feature Engineering
+      
+
+Team Roles and Responsibilities
+  Roles:
+    Project Manager: Vik Ruhil – Ensures timelines are met, organizes meetings, and manages communications.
+    Data Analysts: Raghav Upadhyay, Partha Vemuri – Responsible for data cleaning, analysis, and exploratory visualizations.
+    Visualization Specialist: Yash Sharma, Chaitanya Suralkar – Designs the final visualizations and makes aesthetic choices.
+    Documentation Lead: Smit Shah, Tushar Shrivastava – Keeps detailed notes, ensures all project decisions are documented, and handles the final report.
+  Responsibilities:
+    General Responsibilities: Each team member is responsible for:
+      Participating actively in all meetings.
+      Completing their assigned tasks on time.
+      Communicating openly and promptly if issues arise.
+
+Communication Plan
+  Meeting Schedule: Daily, 5:30 pm MST via Microsoft Teams.
+  Primary Communication Platform: Microfsoft Teams.
+  Decision-Making Process: Decisions will be made by consensus; if a consensus cannot be reached, a vote will be taken. (If vote is hung we do veto)
+
+Work Plan and Timeline
+  Milestones:
+    Data Collection and Cleaning: Completed by [Date].
+    Exploratory Data Analysis: Completed by [Date].
+    Design of Visualizations: Completed by [Date].
+    Final Presentation and Report: Completed by [Date].
+  Task Assignments: [Use a table to assign tasks to team members with due dates.]
+
+Accountability and Expectations
+  Attendance Policy: All team members are expected to attend scheduled meetings unless previously discussed.
+  Quality of Work: All deliverables should be completed to a professional standard.
+  Deadlines: All members are responsible for meeting deadlines. If someone cannot meet a deadline, they must notify the team in advance.
+
+Conflict Resolution Plan
+  Conflict Management: 
+    Discuss the issue openly during a team meeting.
+    Attempt to resolve the issue through compromise.
+    If the conflict persists, consult the project supervisor for guidance.
+
+Signatures
+By signing below, each team member agrees to the terms of this contract and commits to working together effectively and respectfully.
+[Name]: Vik Ruhil Date: 09/30/2024
+[Name]: ________________________ Date: ___________
+[Name]: ________________________ Date: ___________
+[Name]: ________________________ Date: ___________
+[Name]: ________________________ Date: ___________
+[Name]: ________________________ Date: ___________
+[Name]: ________________________ Date: ___________
