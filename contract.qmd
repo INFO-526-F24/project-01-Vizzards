@@ -43,7 +43,7 @@ execute:
 
 A comprehencive view of the IOT network infrastructure during various types of network attacks e.g. DDOS, man in middle, Arp flood etc. Objective of the project is to monitor the behaviour of network parameters during a network attack vs normal traffic flow. The project will outline which parameters are effected during an active network attack e.g. during an arp flood the broadcast traffic which is icmp type of protocol will see high jump in fwd_pkts_tot/bwd_pkts_tot etc.
 
-## Expected Deliverable: 
+## Expected Deliverable:
 
 -   index.qmd
 
@@ -85,7 +85,7 @@ Few of the goals that will be achieved during this project are as follows
 
 -   Team will understand the network attacks and how that impacts the IOT infrastructure.
 
-## Learning Objectives: 
+## Learning Objectives:
 
 -   Agile Methodology
 
@@ -109,7 +109,7 @@ Few of the goals that will be achieved during this project are as follows
 
 ## Team Roles and Responsibilities
 
-## Roles: 
+## Roles:
 
 Project Manager: Vik Ruhil – Ensures timelines are met, organizes meetings, and manages communications.
 
@@ -119,7 +119,7 @@ Visualization Specialist: Yash Sharma, Chaitanya Suralkar – Designs the final 
 
 Documentation Lead: Smit Shah, Tushar Shrivastava – Keeps detailed notes, ensures all project decisions are documented, and handles the final report. Responsibilities:
 
-## General Responsibilities: 
+## General Responsibilities:
 
 Each team member is responsible for: Participating actively in all meetings. Completing their assigned tasks on time. Communicating openly and promptly if issues arise.
 
@@ -159,9 +159,11 @@ Conflict Management: Discuss the issue openly during a team meeting. Attempt to 
 
 By signing below, each team member agrees to the terms of this contract and commits to working together effectively and respectfully.
 
-\[Name\]: Vik Ruhil Date: 09/30/2024
+\[Name\]: Vik Ruhil      
+Date: 09/30/2024
 
-\[Name\]: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date: \_\_\_\_\_\_\_\_\_\_\_
+\[Name\]: Yash Sharma     
+Date: 09/30/2024
 
 \[Name\]: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date: \_\_\_\_\_\_\_\_\_\_\_
 
