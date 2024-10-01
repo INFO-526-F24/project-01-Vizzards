@@ -8,7 +8,7 @@ This project was developed by **\[Team Name\]** For [INFO 526 - Data Analysis an
 
 -   Team member 1: One sentence description of Team member 1 (e.g., year, major, etc.).
 
--   Team member 2: One sentence description of Team member 2 (e.g., year, major, etc.).
+-   Team member 2: Yash, 2026, Data Science
 
 -   Team member 3: One sentence description of Team member 3 (e.g., year, major, etc.).
 
