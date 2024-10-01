@@ -45,22 +45,22 @@
     "objectID": "presentation.html#quarto",
     "href": "presentation.html#quarto",
     "title": "Project title",
-    "section": "Quarto",
-    "text": "Quarto\n\nThe presentation is created using the Quarto CLI\n## sets the start of a new slide"
+    "section": "",
+    "text": "The presentation is created using the Quarto CLI\n## sets the start of a new slide"
   },
   {
     "objectID": "presentation.html#layouts",
     "href": "presentation.html#layouts",
     "title": "Project title",
-    "section": "Layouts",
-    "text": "Layouts\nYou can use plain text\n\n\n\nor bullet points1\n\n\nor in two columns\n\n\n\nlike\nthis\n\nAnd add footnotes"
+    "section": "",
+    "text": "You can use plain text\n\n\n\nor bullet points1\n\n\nor in two columns\n\n\n\nlike\nthis"
   },
   {
     "objectID": "presentation.html#code",
     "href": "presentation.html#code",
     "title": "Project title",
-    "section": "Code",
-    "text": "Code\n\n\n# A tibble: 2 × 5\n  term        estimate std.error statistic       p.value\n  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;\n1 (Intercept)   25.3      3.08        8.22 0.00000000358\n2 speed         -0.116    0.0642     -1.81 0.0806       \n\n\n# A tibble: 1 × 12\n  r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC\n      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1    0.0983        0.0682  5.82      3.27  0.0806     1  -101.  207.  212.\n# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;"
+    "section": "",
+    "text": "# A tibble: 2 × 5\n  term        estimate std.error statistic       p.value\n  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;\n1 (Intercept)   25.3      3.08        8.22 0.00000000358\n2 speed         -0.116    0.0642     -1.81 0.0806       \n\n\n# A tibble: 1 × 12\n  r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC\n      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1    0.0983        0.0682  5.82      3.27  0.0806     1  -101.  207.  212.\n# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;"
   },
   {
     "objectID": "presentation.html#plots",
@@ -73,22 +73,22 @@
     "objectID": "presentation.html#plot-and-text",
     "href": "presentation.html#plot-and-text",
     "title": "Project title",
-    "section": "Plot and text",
-    "text": "Plot and text\n\n\n\nSome text\ngoes here"
+    "section": "",
+    "text": "Some text\ngoes here"
   },
   {
     "objectID": "presentation.html#tables",
     "href": "presentation.html#tables",
     "title": "Project title",
     "section": "Tables",
-    "text": "Tables\nIf you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,\n\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\n\n\n\n\nAdelie\nTorgersen\n39.1\n18.7\n181\n3750\nmale\n\n\nAdelie\nTorgersen\n39.5\n17.4\n186\n3800\nfemale\n\n\nAdelie\nTorgersen\n40.3\n18.0\n195\n3250\nfemale\n\n\nAdelie\nTorgersen\nNA\nNA\nNA\nNA\nNA\n\n\nAdelie\nTorgersen\n36.7\n19.3\n193\n3450\nfemale\n\n\nAdelie\nTorgersen\n39.3\n20.6\n190\n3650\nmale"
+    "text": "Tables\nIf you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\n\n\n\n\nAdelie\nTorgersen\n39.1\n18.7\n181\n3750\nmale\n\n\nAdelie\nTorgersen\n39.5\n17.4\n186\n3800\nfemale\n\n\nAdelie\nTorgersen\n40.3\n18.0\n195\n3250\nfemale\n\n\nAdelie\nTorgersen\nNA\nNA\nNA\nNA\nNA\n\n\nAdelie\nTorgersen\n36.7\n19.3\n193\n3450\nfemale\n\n\nAdelie\nTorgersen\n39.3\n20.6\n190\n3650\nmale"
   },
   {
     "objectID": "presentation.html#images",
     "href": "presentation.html#images",
     "title": "Project title",
     "section": "Images",
-    "text": "Images\n\nImage credit: Danielle Navarro, Percolate."
+    "text": "Images\n\n\n\nImage credit: Danielle Navarro, Percolate."
   },
   {
     "objectID": "presentation.html#math-expressions",
@@ -110,5 +110,110 @@
     "title": "About",
     "section": "",
     "text": "This project was developed by [Team Name] For INFO 526 - Data Analysis and Visualization at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.\n\nTeam member 1: One sentence description of Team member 1 (e.g., year, major, etc.).\nTeam member 2: One sentence description of Team member 2 (e.g., year, major, etc.).\nTeam member 3: One sentence description of Team member 3 (e.g., year, major, etc.).\nTeam member 4: One sentence description of Team member 4 (e.g., year, major, etc.)."
+  },
+  {
+    "objectID": "contract.html",
+    "href": "contract.html",
+    "title": "Team Contract",
+    "section": "",
+    "text": "Vik Ruhil, vikruhil@arizona.edu\nYash Sharma, yashsharma28@arizona.edu\nRaghav Upadhyay, raghavupadhyay@arizona.edu\nPartha Vemuri, parthav@arizona.edu\nChaitanya Suralkar, chaitanyas@arizona.edu\nSmit Shah, smitshah@arizona.edu\nTushar Shrivastava,tshrivastava@arizona.edu\n\n\n\n\n\nA comprehencive view of the IOT network infrastructure during various types of network attacks e.g. DDOS, man in middle, Arp flood etc. Objective of the project is to monitor the behaviour of network parameters during a network attack vs normal traffic flow. The project will outline which parameters are effected during an active network attack e.g. during an arp flood the broadcast traffic which is icmp type of protocol will see high jump in fwd_pkts_tot/bwd_pkts_tot etc.\n\n\n\n\nindex.qmd\nabout.qmd\ncontract.qmd\nproposal.qmd _quarto.yml\nProject-01.Rproj\nPresentation.pdf\nFinal report pdf"
+  },
+  {
+    "objectID": "contract.html#team-members",
+    "href": "contract.html#team-members",
+    "title": "Team Contract",
+    "section": "",
+    "text": "Vik Ruhil, vikruhil@arizona.edu\nYash Sharma, yashsharma28@arizona.edu\nRaghav Upadhyay, raghavupadhyay@arizona.edu\nPartha Vemuri, parthav@arizona.edu\nChaitanya Suralkar, chaitanyas@arizona.edu\nSmit Shah, smitshah@arizona.edu\nTushar Shrivastava,tshrivastava@arizona.edu"
+  },
+  {
+    "objectID": "contract.html#project-description",
+    "href": "contract.html#project-description",
+    "title": "Team Contract",
+    "section": "",
+    "text": "A comprehencive view of the IOT network infrastructure during various types of network attacks e.g. DDOS, man in middle, Arp flood etc. Objective of the project is to monitor the behaviour of network parameters during a network attack vs normal traffic flow. The project will outline which parameters are effected during an active network attack e.g. during an arp flood the broadcast traffic which is icmp type of protocol will see high jump in fwd_pkts_tot/bwd_pkts_tot etc."
+  },
+  {
+    "objectID": "contract.html#expected-deliverable",
+    "href": "contract.html#expected-deliverable",
+    "title": "Team Contract",
+    "section": "",
+    "text": "index.qmd\nabout.qmd\ncontract.qmd\nproposal.qmd _quarto.yml\nProject-01.Rproj\nPresentation.pdf\nFinal report pdf"
+  },
+  {
+    "objectID": "contract.html#project-goals",
+    "href": "contract.html#project-goals",
+    "title": "Team Contract",
+    "section": "Project Goals:",
+    "text": "Project Goals:\nFew of the goals that will be achieved during this project are as follows\n\nUnderstand the Software development Life Cycle (SDLC). As our team is using Jira to track our work progress and follow Agile methodology.\nHow to follow project management as we have a dedicated scrum master in our team.\nUnderstand the workflow of creating a R project.\nDetails and in depth use of R packages. This includes various visualization methods to keep plots within data-to-ink ratio.\nOur team goal is go through consensus process and replicating real world team decision making process.\nTeam will go through story creation based on data and understand how to come up with meaningful questions.\nOur team goal is to reproduce an industry standard report that can be presented to stakeholders.\nTeam will be able to present the project confidently and answers questions initialy decided between team members.\nTeam goal is to understand IOT networks and network as standalone technology for this project.\nTeam will understand the network attacks and how that impacts the IOT infrastructure."
+  },
+  {
+    "objectID": "contract.html#learning-objectives",
+    "href": "contract.html#learning-objectives",
+    "title": "Team Contract",
+    "section": "Learning Objectives:",
+    "text": "Learning Objectives:\n\nAgile Methodology\nProject Management\nR language and packages\nTeam work\nTime management\nVisualization and analysis using R\nResearch meaningful questions\nExploratory Data Analysis\nData Manipulation\nFeature Engineering"
+  },
+  {
+    "objectID": "contract.html#team-roles-and-responsibilities",
+    "href": "contract.html#team-roles-and-responsibilities",
+    "title": "Team Contract",
+    "section": "Team Roles and Responsibilities",
+    "text": "Team Roles and Responsibilities"
+  },
+  {
+    "objectID": "contract.html#roles",
+    "href": "contract.html#roles",
+    "title": "Team Contract",
+    "section": "Roles:",
+    "text": "Roles:\nProject Manager: Vik Ruhil – Ensures timelines are met, organizes meetings, and manages communications.\nData Analysts: Raghav Upadhyay, Partha Vemuri – Responsible for data cleaning, analysis, and exploratory visualizations.\nVisualization Specialist: Yash Sharma, Chaitanya Suralkar – Designs the final visualizations and makes aesthetic choices.\nDocumentation Lead: Smit Shah, Tushar Shrivastava – Keeps detailed notes, ensures all project decisions are documented, and handles the final report. Responsibilities:"
+  },
+  {
+    "objectID": "contract.html#general-responsibilities",
+    "href": "contract.html#general-responsibilities",
+    "title": "Team Contract",
+    "section": "General Responsibilities:",
+    "text": "General Responsibilities:\nEach team member is responsible for: Participating actively in all meetings. Completing their assigned tasks on time. Communicating openly and promptly if issues arise."
+  },
+  {
+    "objectID": "contract.html#communication-plan",
+    "href": "contract.html#communication-plan",
+    "title": "Team Contract",
+    "section": "Communication Plan",
+    "text": "Communication Plan\nMeeting Schedule: Daily, 5:30 pm MST via Microsoft Teams.\nPrimary Communication Platform: Microfsoft Teams.\nDecision-Making Process: Decisions will be made by consensus; if a consensus cannot be reached, a vote will be taken. (If vote is hung we do veto)"
+  },
+  {
+    "objectID": "contract.html#work-plan-and-timeline",
+    "href": "contract.html#work-plan-and-timeline",
+    "title": "Team Contract",
+    "section": "Work Plan and Timeline",
+    "text": "Work Plan and Timeline\nMilestones: Data Collection and Cleaning: Completed by [Date].\nExploratory Data Analysis: Completed by [Date].\nDesign of Visualizations: Completed by [Date].\nFinal Presentation and Report: Completed by [Date].\nTask Assignments: [Use a table to assign tasks to team members with due dates.]"
+  },
+  {
+    "objectID": "contract.html#accountability-and-expectations",
+    "href": "contract.html#accountability-and-expectations",
+    "title": "Team Contract",
+    "section": "Accountability and Expectations",
+    "text": "Accountability and Expectations\nAttendance Policy: All team members are expected to attend scheduled meetings unless previously discussed.\nQuality of Work: All deliverables should be completed to a professional standard.\nDeadlines: All members are responsible for meeting deadlines. If someone cannot meet a deadline, they must notify the team in advance."
+  },
+  {
+    "objectID": "contract.html#conflict-resolution-plan",
+    "href": "contract.html#conflict-resolution-plan",
+    "title": "Team Contract",
+    "section": "Conflict Resolution Plan",
+    "text": "Conflict Resolution Plan\nConflict Management: Discuss the issue openly during a team meeting. Attempt to resolve the issue through compromise. If the conflict persists, consult the project supervisor for guidance.\n\nSignatures\nBy signing below, each team member agrees to the terms of this contract and commits to working together effectively and respectfully.\n[Name]: Vik Ruhil Date: 09/30/2024\n[Name]: ________________________ Date: ___________\n[Name]: ________________________ Date: ___________\n[Name]: ________________________ Date: ___________\n[Name]: Smit Shah Date: 09/30/2024\n[Name]: ________________________ Date: ___________\n[Name]: Raghav Upadhyay Date: 09/30/2024"
+  },
+  {
+    "objectID": "presentation.html",
+    "href": "presentation.html",
+    "title": "Project title",
+    "section": "",
+    "text": "The presentation is created using the Quarto CLI\n## sets the start of a new slide\n\n\n\n\nYou can use plain text\n\n\n\nor bullet points1\n\n\nor in two columns\n\n\n\nlike\nthis\n\n\n\n\n\n\n# A tibble: 2 × 5\n  term        estimate std.error statistic       p.value\n  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;\n1 (Intercept)   25.3      3.08        8.22 0.00000000358\n2 speed         -0.116    0.0642     -1.81 0.0806       \n\n\n# A tibble: 1 × 12\n  r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC\n      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1    0.0983        0.0682  5.82      3.27  0.0806     1  -101.  207.  212.\n# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSome text\ngoes here"
+  },
+  {
+    "objectID": "presentation.html#footnotes",
+    "href": "presentation.html#footnotes",
+    "title": "Project title",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nAnd add footnotes↩︎"
   }
 ]
