@@ -1,11 +1,11 @@
 ---
-title: "Proposal title"
+title: "IOT Network Intrusion Detection Analysis"
 subtitle: "Proposal"
 author: 
-  - name: "Team Name"
+  - name: "ViZZards"
     affiliations:
       - name: "School of Information, University of Arizona"
-description: "Project description"
+description: "Analysis and Visualisation of various types of attacks in IOT network"
 format:
   html:
     code-tools: true
@@ -49,14 +49,76 @@ glimpse(data)
 summary(data)
 ```
 
-A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
+### Description
 
-Make sure to load the data and use inline code for some of this information.
+The dataset consists of 123,117 rows and 77 columns, capturing network traffic flow data. Key features include:
+
+-   **Network Identifiers:** Columns like id.orig_p and id.resp_p capture originating and responding port IDs.
+
+-   **Protocol and Service Information:** Columns such as proto (protocol) and service (e.g., MQTT) identify the communication protocol and services in use.
+
+-   **Traffic Statistics:** These include metrics like packet counts (fwd_pkts_tot, bwd_pkts_tot), packet rates (fwd_pkts_per_sec), and header sizes.
+
+-   **Flow Characteristics:** Features like flow duration (flow_duration), and flags such as flow_FIN_flag_count, flow_ACK_flag_count,flow_SYN_flag_count flow_RST_flag_count capture communication patterns.
+
+-   **Attack Type:** The Attack_type column labels the type of attack or event detected (e.g., MQTT_Publish).
+
+-   **Payload Information:** This payload information describes the size of packets that is flowing through the network during an attack vs normal traffic for eg : fwd_pkts_payload.avg,fwd_pkts_payload.min, fwd_pkts_payload.max which will be higher during an attack.
+
+-   **Bandwidth Information:** The amount of data flowing through IOT infrastructure varies during different type of attack for e.g. during DDOS slowloris is denial of service attack where the data flow is much higher in comparison to normal traffic. So these variables are used for bandwidth information fwd_pkts_tot, bwd_pkts_tot, fwd_data_pkts_tot, bwd_data_pkts_tot,fwd_pkts_per_sec, bwd_pkts_per_sec, flow_pkts_per_sec.
+
+-   **Inter-arrival time information:** Variables like fwd_iat.min, fwd_iat.avg, flow_iat.min can be used to determine what is the time difference between two packets which corresponds to payload information as the payload gets bigger IAT and IAT flow time will be larger.
+
+-   **Idle vs In-use information:** active.avg , idle.avg will provide the information about the IOT devices if it is forwarding or not forwarding the network traffic.
+
+The dataset appears to be useful for studying network behavior, identifying attacks, and analyzing flow-based communication statistics.
+
+### Source of the data
+
+The RT-IoT 2022 dataset, available from the UCI Machine Learning Repository, is designed for research on detecting attacks in IoT (Internet of Things) systems. It contains network flow data from various IoT devices and captures both normal and malicious traffic, making it valuable for studying cybersecurity in IoT environments. The dataset includes features such as packet counts, traffic flow statistics, and communication protocols, which are essential for intrusion detection and anomaly analysis in smart systems. Researchers often use it to train machine learning models to detect cyberattacks.
+
+### Dataset Generation
+
+The RT-IoT2022 dataset was specifically created to train and test the IDS. The dataset comprises normal and attack traffic, captured using real-time IoT devices like ThingSpeak-LED, MQTT-Temp, Amazon Alexa, and Wipro Bulb. The authors used a router setup to connect both victim (IoT devices) and attacker devices, capturing network traffic through the open-source tool Wireshark, which recorded and converted traces into PCAP files.
+
+**Attack Simulation:** SSH Brute-Force Attack: Metasploit’s modules were employed to launch SSH brute-force attacks after scanning for open ports using Nmap. DDoS Attack: The Hping3 tool from Kali Linux was utilized to generate DDoS attacks, transmitting thousands of packets to simulate high traffic.
+
+**Feature Engineering:** The collected PCAP files were processed using the CICFlowmeter tool, converting the network traffic data into bidirectional flow features for analysis. Irrelevant information like source and destination addresses were removed, and categorical features were numerically encoded to prevent overfitting. This method ensured a realistic and comprehensive dataset, encompassing both benign and malicious IoT traffic, critical for developing and testing the QAE IDS model.
 
 ## Questions
 
-The two questions you want to answer.
+The following are the question will be used for our project:-
+
+-   Which protocol, service and port number is used in different type of attack scenarios to avoid any future network cyber attacks ?
+
+-   How do different type of attack show unique patterns across bandwidth, inter arrival time, payload and flow characteristics ? Are these patterns showing any reliable distinctions between attacks ?
+
+-   Which combinations of dimensions is responsible for the different type of attack ?
 
 ## Analysis plan
 
--   A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).
+Question 1:
+
+-   Variable proto , service and id.resp_p will be used and compared with different type of attacks vs when actual devices is talking over same protocol, service and port number.
+
+Question 2:
+
+-   A relationship between variables that corresponds to bandwidth information for e.g. fwd_pkts_tot, bwd_pkts_tot, fwd_data_pkts_tot, bwd_data_pkts_tot, fwd_pkts_per_sec, bwd_pkts_per_sec, flow_pkts_per_sec with attack type will be determined. This will define the clear relationship of bandwidth during an attack
+
+-   Inter-arrival time information which will use variables like fwd_iat.min, fwd_iat.avg, flow_iat.min to make similar relationship during an attack vs normal operation.
+
+-   Every attack type prohibit different payload behaviour. We will use the variables fwd_pkts_payload.avg,fwd_pkts_payload.min, fwd_pkts_payload.max to find out extreme large packet and empty packet
+
+-   DDOS slowloris attack uses TCP SYNC message flooding through the server with the flow characterstics information we will compare number of TCP SYNC message with the number of other TCP messages
+
+Question 3:
+
+-   With comparison of different variables in attack scenarios we will determine who and how many dimensions are affected during attacks
+
+## Ethical concerns
+
+Our dataset do not have any ethical concerns because basic information of internal organization is not included. We are visualising and analysing without source and destination specified which has its pros and cons.
+
+## Citations
+
+| Dataset : [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/942/rt-iot2022)
