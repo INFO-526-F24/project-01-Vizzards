@@ -1,11 +1,11 @@
 ---
-title: "Project Title"
+title: "IOT Network Intrusion Detection Analysis"
 subtitle: "INFO 526 - Fall 2024 - Project 01"
 author: 
-  - name: "Team name"
+  - name: "ViZZards"
     affiliations:
       - name: "School of Information, University of Arizona"
-description: "Project description"
+description: "Analysis and Visualisation of various types of attacks in IOT network"
 format:
    html:
     code-tools: true
@@ -19,4 +19,4 @@ execute:
 
 ## Abstract
 
-Add project abstract here.
+This project focuses on analyzing and visualizing various types of network attacks in IoT (Internet of Things) environments using the RT-IoT 2022 dataset. The dataset captures detailed network traffic flow data, including both normal and malicious activity, across different IoT devices. The analysis aims to identify attack patterns through metrics like protocol usage, bandwidth, payload size, and flow characteristics. The study will address key questions about the distinctive network behaviors during different attacks, enabling future intrusion detection strategies. Ethical concerns are minimal as the dataset excludes sensitive organizational details. This work will provide insights into how network dimensions are impacted during attacks, contributing to enhanced cybersecurity in IoT systems.
