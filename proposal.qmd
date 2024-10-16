@@ -21,7 +21,19 @@ execute:
 ```{r}
 #| label: load-pkgs
 #| message: false
-library(tidyverse)
+if (!require(pacman)) 
+  install.packages("pacman")
+
+# use this line for installing/loading
+pacman::p_load(tidyverse,
+               glue,
+               scales,
+               ggplot2,
+               countdown,
+               grid,
+               readr,
+               dplyr) 
+
 ```
 
 ## Dataset
@@ -29,6 +41,12 @@ library(tidyverse)
 ```{r}
 #| label: load-dataset
 #| message: false
+
+
+data <- read_csv("data/data.csv")
+
+glimpse(data)
+summary(data)
 ```
 
 A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
