@@ -5,7 +5,8 @@ author:
   - name: "ViZZards"
     affiliations:
       - name: "School of Information, University of Arizona"
-description: "Analysis and Visualisation of various types of attacks in IOT network"
+description: "This project aims to analyze and visualize network attacks within Internet of Things (IoT) environments using the RT-IoT 2022 dataset, which includes network traffic data from both normal and malicious activities across various IoT devices. By examining metrics like protocol usage, bandwidth, payload size, and flow characteristics, the study seeks to identify distinctive patterns associated with different types of attacks. These insights will contribute to developing more effective intrusion detection strategies, enhancing cybersecurity within IoT systems. Ethical considerations are minimal, as the dataset excludes sensitive information."
+
 format:
   html:
     code-tools: true
