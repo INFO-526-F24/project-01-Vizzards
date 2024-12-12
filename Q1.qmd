@@ -281,9 +281,17 @@ server <- function(input, output, session) {
   # Page 2: Protocol Distribution
   filtered_protocol_data <- reactive({
     req(input$protocol_filters) # Ensure filters are selected
-    # Normalize protocol values to uppercase for comparison
     data %>%
-      filter(toupper(proto) %in% toupper(input$protocol_filters)) # Case-insensitive match
+      filter(
+        toupper(proto) %in% toupper(input$protocol_filters), # Case-insensitive match
+        !Attack_type %in% c(
+          "NMAP_UDP_SCAN", 
+          "NMAP_XMAS_TREE_SCAN", 
+          "NMAP_OS_DETECTION", 
+          "NMAP_TCP_scan", 
+          "NMAP_FIN_SCAN"
+        ) # Exclude specific attack types
+      )
   })
   
   output$protocol_plot <- renderPlotly({
@@ -314,19 +322,33 @@ server <- function(input, output, session) {
   
   # Page 3: Service Distribution
   observe({
+    processed_services <- unique(ifelse(data$service == "-", "Unknown", data$service))
+    
+    print(processed_services)
     updateCheckboxGroupInput(
       session,
       "service_filters",
-      choices = unique(data$service), # Dynamically populate services
-      selected = unique(data$service) # Default: all selected
+      choices = processed_services, # Dynamically populate services
+      selected = processed_services # Default: all selected
     )
   })
   
   filtered_service_data <- reactive({
     req(input$service_filters)
     data %>%
-      filter(service %in% input$service_filters)
+      mutate(service = ifelse(service == "-", "Unknown", service)) %>% # Rename "-" to "Unknown"
+      filter(
+        service %in% input$service_filters | service == "Unknown", # Include renamed "Unknown" service
+        !Attack_type %in% c(
+          "NMAP_UDP_SCAN", 
+          "NMAP_XMAS_TREE_SCAN", 
+          "NMAP_OS_DETECTION", 
+          "NMAP_TCP_scan", 
+          "NMAP_FIN_SCAN"
+        ) # Exclude specific attack types
+      )
   })
+
   
   output$service_plot <- renderPlotly({
     service_dist <- filtered_service_data() %>%
