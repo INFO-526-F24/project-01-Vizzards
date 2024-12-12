@@ -1,0 +1,357 @@
+---
+title: "IOT Network Intrusion Detection Analysis"
+subtitle: "Q1"
+author: 
+  - name: "ViZZards"
+    affiliations:
+      - name: "School of Information, University of Arizona"
+description: "This project aims to analyze and visualize network attacks within Internet of Things (IoT) environments using the RT-IoT 2022 dataset, which includes network traffic data from both normal and malicious activities across various IoT devices. By examining metrics like protocol usage, bandwidth, payload size, and flow characteristics, the study seeks to identify distinctive patterns associated with different types of attacks. These insights will contribute to developing more effective intrusion detection strategies, enhancing cybersecurity within IoT systems. Ethical considerations are minimal, as the dataset excludes sensitive information."
+
+format:
+  html:
+    code-tools: true
+    code-overflow: wrap
+    code-line-numbers: true
+    embed-resources: true
+editor: visual
+code-annotations: hover
+execute:
+  warning: false
+runtime: shiny
+---
+
+
+```{r}
+#| label: load-pkgs
+#| message: false
+if (!require(pacman)) 
+  install.packages("pacman")
+
+pacman::p_load(
+  # Core data manipulation and visualization
+  tidyverse,
+  glue,
+  scales,
+  ggplot2,
+  grid,
+  readr,
+  corrplot,
+  dplyr,
+  
+  # Shiny and dashboard packages
+  shiny,
+  shinydashboard,
+  DT,
+  plotly,
+  
+  # Additional visualization packages
+  viridis,
+  RColorBrewer,
+  
+  # Data manipulation
+  data.table,
+  tibble,
+  
+  # Interactive features
+  htmlwidgets,
+  
+  # Dashboard themes and styling
+  shinythemes,
+  
+  # Additional utilities
+  stringr,
+  lubridate,
+  forcats,
+  purrr,
+  tidyr,
+  magrittr
+)
+
+
+```
+
+
+## Dataset
+
+```{r}
+#| label: load-dataset
+#| message: false
+
+
+data <- read_csv("data/data.csv")
+
+glimpse(data)
+summary(data)
+```
+
+
+### Libraries and Dataset testing
+
+```{r}
+
+# First, close all connections and clear environment
+rm(list = ls())
+gc()
+
+# Create a vector of required packages
+required_packages <- c("shiny", "shinydashboard", "ggplot2", "dplyr", "plotly", "DT")
+
+# Function to install missing packages
+install_if_missing <- function(package) {
+  if (!requireNamespace(package, quietly = TRUE)) {
+    try(install.packages(package, dependencies = TRUE))
+  }
+}
+
+# Install missing packages
+sapply(required_packages, install_if_missing)
+
+# Load packages
+library(shiny)
+library(shinydashboard)
+library(ggplot2)
+library(dplyr)
+library(plotly)
+library(DT)
+
+# Read the data
+data <- read.csv("data/data.csv")
+
+# Verify data loading
+print("Data dimensions:")
+print(dim(data))
+print("First few rows:")
+print(head(data))
+
+```
+
+
+### Question 1- Shinny App
+
+
+```{r}
+# Load Required Libraries
+library(shiny)
+library(bslib)
+library(plotly)
+library(dplyr)
+
+# Define UI
+ui <- navbarPage(
+  title = "IoT Network Attack Analysis",
+  
+  # Page 1: Attack Type Distribution
+  tabPanel(
+    "Attack Type Distribution",
+    page_fillable(
+      card(
+        card_header(tags$b("Attack Type Distribution (Pie Chart)")),
+        layout_sidebar(
+          sidebar = sidebar(
+            # Change sidebar background color and style
+            style = "background-color: #92C5DE; padding: 20px; border-radius: 8px;",
+            # Add custom CSS to reduce font size of filter text
+            tags$style(HTML("
+              .checkbox label {
+                font-size: 15px; 
+              }
+            ")),
+            # Update the title for checkbox group input
+            tags$div(
+              style = "margin-bottom: 15px;", # Add margin for spacing
+              tags$h3(
+                "Select Attack Types",
+                style = "background-color: #f8f9fa; font-size: 18px; color: #333; font-weight: bold;"
+              )
+            ),
+            # Checkbox input for attack types
+            checkboxGroupInput("selected_attacks", NULL, 
+                               choices = NULL, selected = NULL) # Populated dynamically
+          ),
+          # Adjust plot size
+          plotlyOutput("attack_pie_chart", height = "800px")
+        )
+      )
+    )
+  ),
+  # Page 2: Protocol Distribution
+  tabPanel(
+    "Protocol Distribution",
+    page_sidebar(
+      title = "Protocol Distribution Dashboard",
+      sidebar = sidebar(
+        style = "background-color: #f0f0f0; padding: 20px; border-radius: 8px;",
+        checkboxGroupInput(
+          "protocol_filters",
+          "Select Protocols:",
+          choices = c("UDP", "TCP", "ICMP"),
+          selected = c("UDP", "TCP", "ICMP") # Default: all selected
+        )
+      ),
+      card(
+        card_header(tags$b("Protocol Distribution by Attack Type")),
+        plotlyOutput("protocol_plot", height = "600px")
+      )
+    )
+  ),
+  
+  # Page 3: Service Distribution
+  tabPanel(
+    "Service Distribution",
+    page_sidebar(
+      title = "Service Distribution Dashboard",
+      sidebar = sidebar(
+        checkboxGroupInput(
+          "service_filters",
+          "Select Services:",
+          choices = NULL, # Dynamically populated
+          selected = NULL  # Default: all selected
+        )
+      ),
+      card(
+        card_header("Service Distribution by Attack Type"),
+        plotlyOutput("service_plot", height = "600px")
+      )
+    )
+  )
+)
+
+# Define Server Logic
+server <- function(input, output, session) {
+  # Page 1: Attack Type Distribution
+  truncated_data <- reactive({
+    data %>%
+      count(Attack_type) %>%
+      arrange(desc(n)) %>%
+      mutate(
+        Attack_type = ifelse(nchar(Attack_type) > 20, 
+                             paste0(substr(Attack_type, 1, 17), "..."), 
+                             Attack_type)
+      )
+  })
+  
+  observe({
+    updateCheckboxGroupInput(
+      session,
+      "selected_attacks",
+      choices = truncated_data()$Attack_type,
+      selected = truncated_data()$Attack_type # Default: Select all
+    )
+  })
+  
+  filtered_data <- reactive({
+    if (is.null(input$selected_attacks)) {
+      return(truncated_data()) # Show all if no selection
+    }
+    truncated_data() %>%
+      filter(Attack_type %in% input$selected_attacks)
+  })
+  
+  output$attack_pie_chart <- renderPlotly({
+    attack_dist <- filtered_data()
+    plot_ly(
+      attack_dist, 
+      labels = ~Attack_type, 
+      values = ~n, 
+      type = "pie",
+      textinfo = "label+percent",
+      insidetextorientation = "horizontal",
+      textposition = "outside",
+      hoverinfo = "label+percent+value",
+      pull = rep(0, nrow(attack_dist)), # No slices pulled by default
+      marker = list(colors = RColorBrewer::brewer.pal(n = nrow(attack_dist), name = "Set2")),
+      domain = list(x = c(0.2, 0.8), y = c(0.05, 0.75)) # Adjust size and position
+    ) %>%
+      layout(
+        title = list(
+          text = "Attack Type Distribution",
+          font = list(size = 19, face = "bold")
+        ),
+        showlegend = TRUE,
+        legend = list(
+          orientation = "v", # Horizontal legend
+          x = 1, # Center legend
+          y = 0.5, # Move legend further down
+          xanchor = "left",
+          yanchor = "middle"
+        )
+      )
+  })
+  
+  # Page 2: Protocol Distribution
+  filtered_protocol_data <- reactive({
+    req(input$protocol_filters) # Ensure filters are selected
+    # Normalize protocol values to uppercase for comparison
+    data %>%
+      filter(toupper(proto) %in% toupper(input$protocol_filters)) # Case-insensitive match
+  })
+  
+  output$protocol_plot <- renderPlotly({
+    protocol_dist <- filtered_protocol_data() %>%
+      group_by(Attack_type, proto) %>%
+      summarise(count = n(), .groups = "drop") %>%
+      arrange(desc(count))
+    
+    validate(
+      need(nrow(protocol_dist) > 0, "No data available for the selected protocols.")
+    )
+    
+    plot_ly(
+      protocol_dist,
+      x = ~count,
+      y = ~reorder(Attack_type, count),
+      color = ~proto,
+      type = "bar",
+      orientation = "h"
+    ) %>%
+      layout(
+        title = "Ranked Bar Chart of Protocols",
+        xaxis = list(title = "Attack Count (Log Scale)", type = "log"),
+        yaxis = list(title = "Attack Type"),
+        legend = list(title = list(text = "Protocol"))
+      )
+  })
+  
+  # Page 3: Service Distribution
+  observe({
+    updateCheckboxGroupInput(
+      session,
+      "service_filters",
+      choices = unique(data$service), # Dynamically populate services
+      selected = unique(data$service) # Default: all selected
+    )
+  })
+  
+  filtered_service_data <- reactive({
+    req(input$service_filters)
+    data %>%
+      filter(service %in% input$service_filters)
+  })
+  
+  output$service_plot <- renderPlotly({
+    service_dist <- filtered_service_data() %>%
+      group_by(Attack_type, service) %>%
+      summarise(count = n(), .groups = "drop") %>%
+      arrange(desc(count))
+    
+    plot_ly(
+      service_dist, 
+      x = ~Attack_type, 
+      y = ~count, 
+      color = ~service, 
+      type = "bar"
+    ) %>%
+      layout(
+        barmode = "stack",
+        title = "Service Distribution by Attack Type",
+        xaxis = list(title = "Attack Type", tickangle = 45),
+        yaxis = list(title = "Attack Count (Log Scale)", type = "log")
+      )
+  })
+}
+
+# Run the App
+shinyApp(ui = ui, server = server)
+
+
+```
