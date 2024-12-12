@@ -1,0 +1,461 @@
+---
+title: "IOT Network Intrusion Detection Analysis"
+subtitle: "Q3 : Which combinations of dimensions is responsible for the different type of attack ?"
+author: 
+  - name: "ViZZards"
+    affiliations:
+      - name: "School of Information, University of Arizona"
+description: "This project aims to analyze and visualize network attacks within Internet of Things (IoT) environments using the RT-IoT 2022 dataset, which includes network traffic data from both normal and malicious activities across various IoT devices. By examining metrics like protocol usage, bandwidth, payload size, and flow characteristics, the study seeks to identify distinctive patterns associated with different types of attacks. These insights will contribute to developing more effective intrusion detection strategies, enhancing cybersecurity within IoT systems. Ethical considerations are minimal, as the dataset excludes sensitive information."
+
+format:
+  html:
+    code-tools: true
+    code-overflow: wrap
+    code-line-numbers: true
+    embed-resources: true
+toc: true
+editor: visual
+code-annotations: hover
+execute:
+  warning: false
+  error: false
+  message: false
+---
+
+## Libraries and Setup
+
+```{r}
+#| label: load-pkgs
+#| message: false
+if (!require(pacman)) 
+  install.packages("pacman")
+
+pacman::p_load(
+  # Core data manipulation and visualization
+  tidyverse,
+  glue,
+  scales,
+  ggplot2,
+  grid,
+  readr,
+  corrplot,
+  dplyr,
+  
+  
+  # Additional visualization packages
+  viridis,
+  RColorBrewer,
+  
+  # Data manipulation
+  data.table,
+  tibble,
+  
+  # Additional utilities
+  stringr,
+  lubridate,
+  forcats,
+  purrr,
+  tidyr,
+  magrittr
+)
+
+
+```
+
+
+
+## Dataset
+
+```{r}
+#| label: load-dataset
+#| message: false
+
+
+data <- read_csv("data.csv")
+
+# Assign distinct colors to each attack type
+unique_attacks <- unique(data$Attack_type)
+attack_colors <- hue_pal()(length(unique_attacks))
+
+# Filter dataset to exclude NMAP attacks
+filtered_data <- data %>%
+  filter(!grepl("NMAP", Attack_type, ignore.case = TRUE))
+
+```
+
+## Bandwidth Analysis
+
+```{r}
+#| label: Badwidth Analysis
+#| message: false
+
+# Remove extreme outliers (top 1%)
+bandwidth_data <- filtered_data %>%
+  filter(flow_pkts_per_sec < quantile(flow_pkts_per_sec,
+                                      0.99,
+                                      na.rm = TRUE))
+
+# Create the boxplot with improved scaling and layout
+ggplot(bandwidth_data, aes(x = Attack_type, 
+                           y = flow_pkts_per_sec, 
+                           fill = Attack_type)) +
+  geom_boxplot(outlier.shape = NA) + # Suppress individual outliers 
+  scale_fill_manual(values = attack_colors) + # Custom colors for attack types
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10), # Adjust x-axis
+    axis.title = element_text(size = 12),
+    legend.position = "right"
+  ) +
+  scale_y_log10(labels = scales::comma) + # Apply log10 scale 
+  labs(
+    title = "Flow Packets per Second by Attack Type (Bandwidth Analysis)",
+    x = "Attack Type",
+    y = "Flow Packets per Second (Log Scale)",
+    fill = "Attack Type"
+  )
+
+
+```
+### Analysis :- 
+
+**Variable Interaction:**
+
+High values of flow_pkts_per_sec (e.g., in DOS_SYN_Hping) indicate 
+rapid packet flooding, overwhelming network bandwidth.
+Other attack types, like DDOS_Slowloris, exhibit low and steady 
+flow packet rates, emphasizing a strategic, resource-depleting attack style.
+
+**Inference:**
+
+Attacks like DOS_SYN_Hping utilize high-bandwidth strategies,
+while others like ARP_poisoning rely on precise, low-rate operations.
+This interaction suggests that bandwidth-intensive attacks overwhelm 
+network resources rapidly, while low-rate attacks focus on exploiting 
+system vulnerabilities.
+
+
+## Inter-Arrival Time Analysis
+
+```{r}
+#| label: Inter-Arrival Time Analysis 
+#| message: false
+
+# Remove extreme outliers (top 1%)
+iat_data <- filtered_data %>%
+  filter(fwd_iat.avg < quantile(fwd_iat.avg, 0.99, na.rm = TRUE))
+
+# Create the boxplot with improved formatting and log scale
+ggplot(iat_data, aes(x = Attack_type, y = fwd_iat.avg, fill = Attack_type)) +
+  geom_boxplot(outlier.shape = NA) + # Suppress individual outliers
+  scale_fill_manual(values = attack_colors) + # Custom colors for attack types
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10), 
+    axis.title = element_text(size = 12),
+    legend.position = "right"
+  ) +
+  scale_y_log10(labels = scales::comma) + # Apply log10 scale for y-axis
+  labs(
+    title = "Average Forward Inter-Arrival Time by Attack Type",
+    x = "Attack Type",
+    y = "Forward Inter-Arrival Time (Log Scale)",
+    fill = "Attack Type"
+  )
+
+
+```
+### Analysis :- 
+
+**Variable Interaction:**
+
+fwd_iat.avg (average inter-arrival time) and its distribution differ
+across attack types.
+
+DDOS_Slowloris shows high inter-arrival times,
+reflecting deliberate delays.
+
+MQTT_Publish exhibits tightly packed inter-arrival times, 
+indicating efficient payload delivery.
+
+**Inference:**
+
+Slowloris attacks exploit resource-holding behaviors 
+with prolonged intervals, interacting with server timeout mechanisms.
+
+Low inter-arrival time attacks (e.g., MQTT_Publish) use speed to 
+avoid detection and maximize payload delivery, highlighting temporal 
+manipulation as a key tactic.
+
+
+
+
+
+## Payload Behavior Analysis
+
+```{r}
+#| label: Payload Behavior Analysis
+#| message: false
+
+# Remove extreme outliers (top 1%)
+payload_data <- filtered_data %>%
+  filter(fwd_pkts_payload.avg < quantile(fwd_pkts_payload.avg, 
+                                         0.99,
+                                         na.rm = TRUE))
+
+# Create the boxplot with focused y-axis range
+ggplot(payload_data, aes(x = Attack_type,
+                         y = fwd_pkts_payload.avg,
+                         fill = Attack_type)) +
+  geom_boxplot(outlier.shape = NA) + # Suppress individual outliers
+  scale_fill_manual(values = attack_colors) + # Custom colors for attack types
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, 
+                               hjust = 1, 
+                               size = 10), 
+    axis.title = element_text(size = 12),
+    legend.position = "right",
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  ) +
+  coord_cartesian(ylim = c(10, 100)) + # Focus on y-axis range 10 to 100
+  labs(
+    title = "Average Forward Packets Payload by Attack Type (Focused Range)",
+    x = "Attack Type",
+    y = "Forward Packets Payload (Average)",
+    fill = "Attack Type"
+  )
+
+
+
+```
+### Analysis:-
+
+**Variable Interaction:**
+
+Variables like fwd_pkts_payload.avg and fwd_pkts_payload.max 
+interact to characterize payload distribution.
+
+Wipro_bulb shows a wide payload range, indicating varied message 
+sizes, while DDOS_Slowloris clusters at smaller payloads.
+
+**Inference:**
+
+Larger payload ranges indicate dynamic and adaptable attacks 
+(e.g., Wipro_bulb), while smaller ranges (e.g., Slowloris) rely 
+on consistent patterns to exhaust resources.
+
+Payload variability can be a signature of attack intent 
+(e.g., reconnaissance vs. volumetric).
+
+
+
+## Heatmaps for Each Attack Type
+
+```{r}
+#| label: Heatmaps for Each Attack Type
+#| message: false
+
+# Select only bandwidth, packet size, and flow-related variables
+heatmap_vars <- c(
+  "fwd_pkts_tot", "bwd_pkts_tot", "fwd_data_pkts_tot", "bwd_data_pkts_tot",
+  "fwd_pkts_per_sec", "bwd_pkts_per_sec", "flow_pkts_per_sec",
+  "fwd_pkts_payload.avg", "fwd_pkts_payload.min", "fwd_pkts_payload.max",
+  "flow_duration"
+)
+
+# Loop through each unique attack type
+for (attack in unique(filtered_data$Attack_type)) {
+  # Filter data for the specific attack type
+  attack_data <- filtered_data %>% filter(Attack_type == attack)
+  
+  # Ensure there are enough observations to compute correlations
+  if (nrow(attack_data) < 5) next
+  
+  # Subset only the relevant columns present in attack_data
+  relevant_vars <- intersect(heatmap_vars, names(attack_data))
+  
+  # Remove variables with constant values or too many missing values
+  valid_vars <- sapply(attack_data[, relevant_vars, drop = FALSE], function(col) {
+    var(col, na.rm = TRUE) > 0 & sum(is.na(col)) / length(col) < 0.5
+  })
+  
+  # Subset the attack_data to valid variables only
+  attack_data <- attack_data[, names(valid_vars)[valid_vars], drop = FALSE]
+  
+  # Calculate correlation matrix, excluding NA values
+  if (ncol(attack_data) > 1) {
+    corr_matrix <- cor(attack_data, use = "pairwise.complete.obs")
+    
+    # Replace NA correlations with 0 (optional)
+    corr_matrix[is.na(corr_matrix)] <- 0
+    
+    # Create the heatmap
+    heatmap <- ggplot(melt(corr_matrix), aes(Var1, Var2, fill = value)) +
+      geom_tile(color = "white") +
+      scale_fill_gradient2(
+        low = "darkblue", mid = "white", high = "darkred", midpoint = 0, 
+        limit = c(-1, 1), name = "Correlation"
+      ) +
+      labs(
+        title = paste("Correlation Heatmap for", attack),
+        x = "Variables",
+        y = "Variables"
+      ) +
+      theme_minimal() +
+      theme(
+        axis.text.x = element_text(angle = 90, hjust = 1, size = 10),
+        axis.text.y = element_text(size = 10),
+        plot.title = element_text(hjust = 0.5, size = 14, face = "bold")
+      )
+    
+    # Print the heatmap
+    print(heatmap)
+  }
+}
+
+
+```
+
+### Analysis :-
+
+**1. ARP_Poisoning**
+
+**Variable Interaction:**
+Strong correlation between bwd_pkts_tot and flow_pkts_per_sec 
+suggests balanced bidirectional traffic.
+
+**Inference:**
+ARP poisoning exploits bidirectional communication, emphasizing 
+the importance of packet symmetry in its success.
+
+
+**2. DDOS_Slowloris**
+
+**Variable Interaction:**
+Weak correlations across all bandwidth and flow metrics.
+
+**Inference:**
+Interaction between low bandwidth, small payloads, and 
+long durations indicates a resource-depleting strategy 
+without significant data transfer.
+
+**3. DOS_SYN_Hping**
+
+**Variable Interaction:**
+High correlation between fwd_pkts_per_sec and fwd_pkts_tot.
+
+**Inference:**
+This attack relies on large volumes of forward packets to 
+overwhelm servers, showing a direct relationship between 
+packet frequency and attack intensity.
+
+**4. Metasploit_Brute_Force_SSH**
+
+**Variable Interaction:**
+Correlation between flow_duration and fwd_pkts_payload.avg 
+highlights persistence.
+
+**Inference:**
+The attack uses sustained sessions with consistent payloads,
+emphasizing authentication cracking through repetitive probes.
+
+**5. MQTT_Publish**
+
+**Variable Interaction:**
+High correlation between fwd_pkts_payload.max and 
+fwd_pkts_per_sec reflects optimized payload delivery.
+
+**Inference:**
+MQTT_Publish exploits efficiency in payload delivery, 
+highlighting its IoT application focus.
+
+**6. Thing_Speak**
+
+**Variable Interaction:**
+Weak overall correlations, but moderate between 
+bwd_pkts_tot and fwd_pkts_payload.avg.
+
+**Inference:**
+Thing_Speak operates with minimal but consistent 
+bidirectional traffic, leveraging IoT protocols for 
+covert data exchanges.
+
+**7. Wipro_Bulb**
+
+**Variable Interaction:**
+Strong correlation between fwd_pkts_payload.max 
+and flow_pkts_per_sec.
+
+**Inference:**
+The attack utilizes high variability in payload and 
+packet flow, reflecting erratic patterns aimed at 
+dynamic IoT environments.
+
+
+## Synthesis of Variable Interactions Across Attack Types:-
+
+**1. Bandwidth Utilization:**
+
+High flow_pkts_per_sec correlates with volumetric attacks 
+like DOS_SYN_Hping, which focus on resource saturation.
+Low but steady flow rates signify targeted, resource-depleting 
+attacks (e.g., DDOS_Slowloris).
+
+**2. Temporal Manipulation:**
+
+fwd_iat.avg is a defining characteristic for attacks 
+like Slowloris, which exploit high inter-arrival times 
+to hold server resources.
+
+**3. Payload Dynamics:**
+
+Variability in fwd_pkts_payload.max reflects attack 
+adaptability. Static payloads indicate systematic 
+attacks (e.g., Metasploit_Brute_Force_SSH), while 
+dynamic payloads (e.g., Wipro_bulb) signify flexible, 
+IoT-specific threats.
+
+**4. Bidirectional Traffic:**
+
+Correlations between bwd_pkts_tot and fwd_pkts_tot 
+highlight the reliance on bidirectional traffic for 
+attacks like ARP_poisoning, which exploit network 
+routing vulnerabilities.
+
+**5.Attack Fingerprinting:**
+
+Each attack type displays unique interaction patterns
+among variables, creating distinct signatures. These
+can inform the development of targeted anomaly detection
+systems.
+
+
+## Conclusion
+
+The interaction of variables such as bandwidth, payload, 
+and inter-arrival time during an attack provides critical 
+insights into the mechanisms and intent of various attack 
+types on IoT devices. High bandwidth and rapid packet flows 
+signify volumetric attacks, while prolonged inter-arrival 
+times suggest resource-exhausting tactics. Variable correlations, 
+like those observed in payload size and flow rates, underline 
+the adaptability and stealth of IoT-targeted attacks.
+
+**Significance: Understanding these interactions allows for:**
+
+**Attack Fingerprinting:** Identifying unique behavioral signatures 
+for each attack.
+
+**Anomaly Detection:** Designing systems that leverage these 
+patterns for early detection.
+
+**IoT-Specific Defenses:** Developing tailored security 
+protocols for IoT environments, accounting for their unique 
+traffic and payload characteristics.
+
+This analysis provides a foundation for developing advanced, adaptive intrusion detection systems (IDS) tailored to IoT environments.
+
+
+
