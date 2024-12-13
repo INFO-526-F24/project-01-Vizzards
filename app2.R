@@ -53,16 +53,16 @@ ui <- fluidPage(
       fluidRow(
         column(
           width = 12,
-          style = "display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 50px;",
           div(
             class = "hover-text",
-            style = "text-align: center; margin-bottom: 20px;",
-            h4("Discover unique patterns of attacks using scatter plot animation.")
-          ),
-          div(
-            class = "hover-image",
-            style = "text-align: center; margin-top: 50px;",
-            imageOutput("animatedScatterPlot", height = "500px")
+            style = "display: flex; flex-direction: column; align-items: center; justify-content: center;margin-top: 50px;",
+            h4("Discover unique patterns of attacks using scatter plot animation.",
+               style = "text-align: center; margin-bottom: 20px;"),
+            div(
+              class = "hover-image",
+              style = "text-align: center; margin-top: 50px;",
+              imageOutput("animatedScatterPlot", height = "500px")
+            )
           )
         )
       )
@@ -166,7 +166,8 @@ server <- function(input, output, session) {
       filter(!str_starts(Attack_type, regex("^NMAP", ignore_case = TRUE))) %>%
       mutate(log_payload = log10(payload_bytes_per_second + 1),
              log_iat = log10(flow_iat.avg + 1),
-             iat_bin = cut(log_iat, breaks = 5))
+             iat_bin = cut(log_iat, breaks = 5)) %>%
+      mutate(iat_bin = factor(iat_bin, levels = rev(levels(iat_bin))))
 
     ridge_plot <- ggplot(data_ridge, aes(x = log_payload, y = Attack_type, fill = Attack_type)) +
       geom_density_ridges(alpha = 0.8, scale = 1) +
