@@ -31,11 +31,11 @@ This project focuses on studying and visualizing IoT network traffic using the R
 
 The primary goal of this study is to uncover unique patterns and anomalies in metrics such as protocol usage, bandwidth, payload size, and inter-arrival times that distinguish various attack types. This analysis will address the following research questions:
 
-1.  Protocol Vulnerabilities: Which protocols, services, and port numbers are most exploited during different types of attacks?
+1.  **Protocol Vulnerabilities**: Which protocols, services, and port numbers are most exploited during different types of attacks?
 
-2.  Attack Characteristics: How do attacks differ in terms of bandwidth, payload, inter-arrival time, and flow patterns? Are these distinctions reliable for detecting specific attack types?
+2.  **Attack Characteristics**: How do attacks differ in terms of bandwidth, payload, inter-arrival time, and flow patterns? Are these distinctions reliable for detecting specific attack types?
 
-3.  Dimensional Interactions: Which combinations of variables most significantly impact network behavior during attacks
+3.  **Dimensional Interactions**: Which combinations of variables most significantly impact network behavior during attacks?
 
 By answering these questions, this project aims to contribute to the development of robust intrusion detection systems (IDS) for IoT networks, enhancing their ability to identify and mitigate cyber threats.
 
