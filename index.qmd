@@ -17,6 +17,126 @@ execute:
   echo: false
 ---
 
-## Abstract
+## **Abstract**
 
-This project focuses on analyzing and visualizing various types of network attacks in IoT (Internet of Things) environments using the RT-IoT 2022 dataset. The dataset captures detailed network traffic flow data, including both normal and malicious activity, across different IoT devices. The analysis aims to identify attack patterns through metrics like protocol usage, bandwidth, payload size, and flow characteristics. The study will address key questions about the distinctive network behaviors during different attacks, enabling future intrusion detection strategies. Ethical concerns are minimal as the dataset excludes sensitive organizational details. This work will provide insights into how network dimensions are impacted during attacks, contributing to enhanced cybersecurity in IoT systems.
+This project analyzes and visualizes various types of network attacks in IoT (Internet of Things) environments using the RT-IoT 2022 dataset. The dataset captures detailed network traffic flow data across different IoT devices, including normal and malicious activity. The analysis aims to identify attack patterns through metrics like protocol usage, bandwidth, payload size, and flow characteristics. The study will address key questions about the distinctive network behaviors during different attacks, enabling future intrusion detection strategies. Ethical concerns are minimal as the dataset excludes sensitive organizational details. This work will provide insights into how network dimensions are impacted during attacks, contributing to enhanced cybersecurity in IoT systems.
+
+## **Introduction and Data**
+
+### **Introduction**
+
+The Internet of Things (IoT) has revolutionized technology by connecting devices and automating tasks in fields such as healthcare, smart homes, and industry. However, the increased use of IoT networks has made them vulnerable to cyberattacks, as these devices often lack robust security measures and use diverse network setups. Understanding IoT network behavior and identifying patterns associated with malicious activities are crucial to addressing these challenges.
+
+This project analyzes IoT network traffic using the RT-IoT2022 dataset, which captures real-world IoT behaviors, including normal and attack traffic from devices like ThingSpeak-LED and Wipro Bulb. The dataset simulates various attacks, such as Brute-Force SSH, DDoS, and Nmap scans, and records detailed traffic metrics like protocol usage, bandwidth, and payload sizes.
+
+The primary aim is to uncover patterns and anomalies that differentiate attack types, focusing on protocol vulnerabilities, attack characteristics, and variable interactions. Insights from this study contribute to developing robust intrusion detection systems (IDS) for IoT networks, enhancing their security against evolving cyber threats.
+
+**Dataset Description**
+
+The RT-IoT 2022 dataset comprises 123,117 rows and 77 columns, capturing detailed network traffic flow data. This data represents both normal and malicious activities across various IoT devices, providing insights into real-world IoT network behaviors.
+
+The dataset was collected using a real-time IoT infrastructure that included devices such as ThingSpeak-LED, Wipro Bulb, MQTT-Temp, and Amazon Alexa. To simulate real-world scenarios, both normal network traffic and various attack patterns were recorded. Attack scenarios included Brute-Force SSH attacks (executed using Metasploit), DDoS attacks (generated using tools like Hping and Slowloris), and network scans (conducted with Nmap).
+
+Network traffic was captured using the Zeek network monitoring tool, which recorded bidirectional traffic flows. The data was then processed using the Flowmeter plugin, which extracted key flow attributes and converted the raw packet captures into a structured tabular format. This preprocessing ensured that the dataset provides a comprehensive view of network behavior, enabling in-depth analysis of IoT cybersecurity threats.
+
+Key features of the dataset include:
+
+-   **Network Identifiers:** Columns like id.orig_p (originating port) and id.resp_p (responding port) capture network communication endpoints.
+
+-   **Protocol and Service Information:** The proto column records the communication protocol, while the service column indicates services like MQTT.
+
+-   **Traffic Statistics:** Metrics such as packet counts (fwd_pkts_tot, bwd_pkts_tot), rates (fwd_pkts_per_sec), and header sizes provide insights into traffic behavior.
+
+-   **Flow Characteristics:** Features like flow_duration and flags (flow_FIN_flag_count, flow_ACK_flag_count, etc.) describe the nature of network communication.
+
+-   **Attack Type:** The Attack_type column labels the detected attack (e.g., MQTT_Publish or DDoS Slowloris).
+
+-   **Payload Information:** Columns like fwd_pkts_payload.avg and fwd_pkts_payload.max capture packet size details.
+
+-   **Bandwidth Information:** Variables such as fwd_pkts_tot and bwd_pkts_per_sec help analyze data flow during attacks.
+
+-   **Inter-arrival Time Information:** Columns like fwd_iat.avg and flow_iat.min measure the time gap between packets.
+
+-   **Idle vs. In-use Information:** Metrics like active.avg and idle.avg indicates whether IoT devices are actively transmitting data.
+
+The RT-IoT 2022 dataset is already cleaned and ready for analysis. There are no missing values, and all the data is complete and consistent. The creators of the dataset have already handled any necessary preprocessing, such as removing irrelevant features and converting categorical data into numerical form. This makes the dataset easy to use without any extra cleaning steps needed.
+
+### **Ethical Considerations**
+
+The dataset does not include sensitive information, ensuring minimal ethical concerns. It is suitable for academic research and model development for intrusion detection systems.
+
+### **Exploratory Data Analysis (EDA)**
+
+The initial EDA focuses on understanding the distribution of key variables and their relationship with attack types. Visualizations such as histograms, box plots, and scatter plots summarize the data and highlight patterns. (The EDA effectively utilizes visualizations and summary statistics to provide insights into the data and highlight relevant variable relationships.)
+
+**Key Observations:**
+
+1.  **Protocol Usage:** Certain attacks, like DDoS, use specific protocols, such as TCP and UDP, frequently.
+
+2.  **Bandwidth Anomalies:** During DDoS attacks, variables like fwd_pkts_tot and bwd_pkts_per_sec spike significantly compared to normal traffic.
+
+3.  **Payload Characteristics:** Attacks tend to generate extreme payload sizes, visible in metrics like fwd_pkts_payload.max.
+
+4.  **Inter-arrival Times:** Malicious activities often exhibit irregular packet inter-arrival times, captured by fwd_iat.min and fwd_iat.avg.
+
+5.  **Flow Characteristics:** Attacks like Slowloris involve repeated TCP SYN messages, which are reflected in the flow_SYN_flag_count.
+
+These visualizations provide valuable insights into how different attacks affect IoT network behavior, forming the foundation for further analysis.
+
+## **Methodology**
+
+### **Protocol, Service, and Port Analysis (Question 1)**
+
+This analysis examined the distribution and characteristics of network attacks across protocols, services, and ports to identify trends and vulnerabilities. The dataset was grouped by attack types, services, and protocols, and logarithmic scaling was applied to handle wide-ranging attack counts for improved interpretability.
+
+**Visualization Techniques**:
+
+1.  **Pie Chart**: Illustrated the proportional distribution of attack types, highlighting DOS_SYN_Hping as the dominant attack (76.9%).
+
+    ![Attack Type Distribution](images/q1(piehcart).png){width="400" height="450"}
+
+2.  **Ranked Bar Chart**: Grouped attack types by protocols (TCP, UDP, ICMP) to demonstrate protocol dominance across attacks.
+
+    ![Ranked Bar Chart of Protocols](images/newplot(barchart).png){width="400" height="450"}
+
+3.  **Stacked Bar Chart**: Showed service distributions within each attack type for a clear view of overall and individual contributions.
+
+    ![Service Distribution by Attack Type](images/newplotchart3.png){width="400" height="450"}
+
+**Tools**: Python libraries, including Matplotlib and Seaborn, enabled precise, customizable visualizations to effectively address research questions on protocol and service vulnerabilities.
+
+### **Advanced Analysis Using Animated Visualizations (Question 2)**
+
+This section focused on analyzing attack characteristics and bandwidth usage through interactive animations. Logarithmic transformations of bandwidth and flow duration ensured better interpretability of data spanning multiple scales.
+
+**Visualization Techniques**:
+
+1.  **Ridge Plot Animation**: Highlighted bandwidth distribution variations across attack types dynamically.
+
+2.  **Scatter Plot Animation**: Explored payload vs. flow duration relationships to uncover unique attack patterns.
+
+3.  **Bar Chart Race Animation**: Showcased bandwidth dominance by attack types over time.
+
+4.  **Time-Series Animation**: Captured temporal bandwidth variations during attacks.
+
+**Tools**: R Shiny dashboards enhanced interactivity, while ggplot2 and gganimate provided dynamic, engaging animations for deeper insights into attack behaviors.
+
+**Justification**: The animations effectively communicated temporal and behavioral patterns, aligning with research goals to analyze attack characteristics and resource usage trends.
+
+### **Dimensional Interactions in Attack Behavior (Question 3)**
+
+This analysis investigated variable interactions influencing IoT network behavior during attacks, focusing on metrics like payload, inter-arrival times, and packet flows. Correlation analysis identified significant relationships among key variables.
+
+**Visualization Techniques**:
+
+1.  **Correlation Heatmap**: Highlights variable relationships for attack types, such as strong correlations between forward and backward packet totals, providing insights into interaction patterns.
+
+2.  **Boxplot - Forward Packets Payload**: Shows variations in average packet payload sizes across attacks, revealing differences in data transfer behavior.
+
+3.  **Boxplot - Forward Inter-Arrival Times**: Displays inter-arrival time distributions, capturing temporal variations between different attack types.
+
+4.  **Boxplot - Flow Packets per Second**: Illustrates bandwidth usage by analyzing flow packets per second, emphasizing resource variations across attacks.
+
+**Tools**: ggplot2 enabled detailed visualizations, while correlation matrices provided insights into critical variable interactions.
+
+**Justification**: The chosen visual methods effectively addressed how variable combinations impact network behavior and temporal attack patterns, aiding in intrusion detection system improvements.
