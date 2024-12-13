@@ -11,7 +11,7 @@ library(shinythemes)
 library(shinycssloaders)
 
 # Load the data
-data <- read_csv(here("data.csv"))
+data <- read_csv(here("data/data.csv"))
 
 # Define UI
 ui <- fluidPage(

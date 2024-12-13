@@ -21,7 +21,7 @@ pacman::p_load(ggplot2,
 
 ```{r}
 
-data <- read_csv(here("data.csv"))
+data <- read_csv(here("data/data.csv"))
 
 ```
 
