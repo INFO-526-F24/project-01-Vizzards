@@ -19,8 +19,6 @@ execute:
   warning: false
 ---
 
-
-
 ## Dataset
 
 ```{r}
@@ -30,15 +28,11 @@ execute:
 
 data <- read_csv("data/data.csv")
 
-glimpse(data)
+#glimpse(data)
 summary(data)
 ```
 
-
-
 ### Questions 1 Explonatory
-
-
 
 ### Description
 

@@ -131,9 +131,49 @@ library(bslib)
 library(plotly)
 library(dplyr)
 
+# Load Required Libraries
+library(shiny)
+library(bslib)
+library(plotly)
+library(dplyr)
+library(RColorBrewer)
+
 # Define UI
 ui <- navbarPage(
   title = "IoT Network Attack Analysis",
+  tags$head(
+    # Navigation hover effects
+    tags$style(HTML(
+      "
+      .navbar-default .navbar-nav > li > a {
+        transition: all 0.3s ease; /* Smooth transitions */
+      }
+      .navbar-default .navbar-nav > li > a:hover {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Shadow on hover */
+        transform: translateY(-2px); /* Slight vertical lift */
+        color: #007bff; /* Example highlight color */
+      }
+      .navbar-default .navbar-nav > .active > a,
+      .navbar-default .navbar-nav > .active > a:focus,
+      .navbar-default .navbar-nav > .active > a:hover {
+        color: #fff;
+        background-color: #337ab7;
+      }
+      "
+    )),
+    # Add custom JavaScript for pie chart hover
+    tags$script(HTML("
+      $(document).ready(function() {
+        Shiny.addCustomMessageHandler('updatePiePull', function(message) {
+          if (Plotly.d3.select('#attack_pie_chart').node()) {
+            Plotly.restyle('attack_pie_chart', {
+              pull: message.pull
+            });
+          }
+        });
+      });
+    "))
+  ),
   
   # Page 1: Attack Type Distribution
   tabPanel(
@@ -169,6 +209,7 @@ ui <- navbarPage(
       )
     )
   ),
+  
   # Page 2: Protocol Distribution
   tabPanel(
     "Protocol Distribution",
@@ -244,6 +285,7 @@ server <- function(input, output, session) {
   
   output$attack_pie_chart <- renderPlotly({
     attack_dist <- filtered_data()
+    
     plot_ly(
       attack_dist, 
       labels = ~Attack_type, 
@@ -253,24 +295,66 @@ server <- function(input, output, session) {
       insidetextorientation = "horizontal",
       textposition = "outside",
       hoverinfo = "label+percent+value",
-      pull = rep(0, nrow(attack_dist)), # No slices pulled by default
-      marker = list(colors = RColorBrewer::brewer.pal(n = nrow(attack_dist), name = "Set2")),
-      domain = list(x = c(0.2, 0.8), y = c(0.05, 0.75)) # Adjust size and position
-    ) %>%
-      layout(
-        title = list(
-          text = "Attack Type Distribution",
-          font = list(size = 19, face = "bold")
-        ),
-        showlegend = TRUE,
-        legend = list(
-          orientation = "v", # Horizontal legend
-          x = 1, # Center legend
-          y = 0.5, # Move legend further down
-          xanchor = "left",
-          yanchor = "middle"
+      
+      # Initial pull state
+      pull = rep(0, nrow(attack_dist)),
+      
+      hovertemplate = paste(
+        "<b>%{label}</b><br>",
+        "Count: %{value}<br>",
+        "Percentage: %{percent}<extra></extra>"
+      ),
+      
+      marker = list(
+        colors = RColorBrewer::brewer.pal(n = nrow(attack_dist), name = "Set2"),
+        line = list(
+          color = '#FFFFFF',
+          width = 1.5
         )
+      ),
+      
+      hoverlabel = list(
+        bgcolor = "white",
+        bordercolor = "#92C5DE",
+        font = list(color = "black", size = 14)
+      ),
+      
+      domain = list(x = c(0.2, 0.8), y = c(0.05, 0.75))
+    ) %>%
+    layout(
+      title = list(
+        text = "Attack Type Distribution",
+        font = list(size = 19, face = "bold")
+      ),
+      showlegend = TRUE,
+      legend = list(
+        orientation = "v",
+        x = 1,
+        y = 0.5,
+        xanchor = "left",
+        yanchor = "middle"
       )
+    )
+  })
+  
+  # Hover interaction for pie chart
+  observe({
+    req(input$attack_pie_chart_hover)
+    
+    # Get the hovered point index
+    hover_info <- input$attack_pie_chart_hover
+    
+    if (!is.null(hover_info)) {
+      # Create pull array
+      pull_array <- rep(0, nrow(filtered_data()))
+      pull_array[hover_info$pointNumber + 1] <- 0.2
+      
+      # Send message to client to update pie chart
+      session$sendCustomMessage(
+        type = 'updatePiePull', 
+        message = list(pull = pull_array)
+      )
+    }
   })
   
   # Page 2: Protocol Distribution
@@ -319,7 +403,6 @@ server <- function(input, output, session) {
   observe({
     processed_services <- unique(ifelse(data$service == "-", "Unknown", data$service))
     
-    print(processed_services)
     updateCheckboxGroupInput(
       session,
       "service_filters",
@@ -343,7 +426,6 @@ server <- function(input, output, session) {
         ) # Exclude specific attack types
       )
   })
-
   
   output$service_plot <- renderPlotly({
     service_dist <- filtered_service_data() %>%
@@ -369,6 +451,5 @@ server <- function(input, output, session) {
 
 # Run the App
 shinyApp(ui = ui, server = server)
-
 
 ```
