@@ -20,7 +20,6 @@ execute:
 runtime: shiny
 ---
 
-
 ```{r}
 #| label: load-pkgs
 #| message: false
@@ -70,7 +69,6 @@ pacman::p_load(
 
 ```
 
-
 ## Dataset
 
 ```{r}
@@ -83,7 +81,6 @@ data <- read_csv("data/data.csv")
 glimpse(data)
 summary(data)
 ```
-
 
 ### Libraries and Dataset testing
 
@@ -125,9 +122,7 @@ print(head(data))
 
 ```
 
-
 ### Question 1- Shinny App
-
 
 ```{r}
 # Load Required Libraries
