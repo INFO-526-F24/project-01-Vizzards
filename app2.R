@@ -43,7 +43,7 @@ ui <- fluidPage(
   "))),
 
   titlePanel(
-    div("Interactive Animated Visualizations", class = "hover-text")
+    div("Animated Visualizations", class = "hover-text")
   ),
 
   # Add tabs for multiple visualizations
