@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="ViZZards">
-<meta name="description" content="Analysis and Visualisation of various types of attacks in IOT network">
+<meta name="description" content="This project aims to analyze and visualize network attacks within Internet of Things (IoT) environments using the RT-IoT 2022 dataset, which includes network traffic data from both normal and malicious activities across various IoT devices. By examining metrics like protocol usage, bandwidth, payload size, and flow characteristics, the study seeks to identify distinctive patterns associated with different types of attacks. These insights will contribute to developing more effective intrusion detection strategies, enhancing cybersecurity within IoT systems. Ethical considerations are minimal, as the dataset excludes sensitive information.">
 
 <title>IOT Network Intrusion Detection Analysis – Project Title</title>
 <style>
@@ -4803,12 +4803,10 @@ vertical-align: -.125em;
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset">Dataset</a>
-  <ul class="collapse">
+  <li><a href="#questions-1-explonatory" id="toc-questions-1-explonatory" class="nav-link active" data-scroll-target="#questions-1-explonatory">Questions 1 Explonatory</a></li>
   <li><a href="#description" id="toc-description" class="nav-link" data-scroll-target="#description">Description</a></li>
   <li><a href="#source-of-the-data" id="toc-source-of-the-data" class="nav-link" data-scroll-target="#source-of-the-data">Source of the data</a></li>
   <li><a href="#dataset-generation" id="toc-dataset-generation" class="nav-link" data-scroll-target="#dataset-generation">Dataset Generation</a></li>
-  </ul></li>
   <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a></li>
   <li><a href="#analysis-plan" id="toc-analysis-plan" class="nav-link" data-scroll-target="#analysis-plan">Analysis plan</a></li>
   <li><a href="#ethical-concerns" id="toc-ethical-concerns" class="nav-link" data-scroll-target="#ethical-concerns">Ethical concerns</a></li>
@@ -4827,7 +4825,7 @@ vertical-align: -.125em;
 
 <div>
   <div class="description">
-    Analysis and Visualisation of various types of attacks in IOT network
+    This project aims to analyze and visualize network attacks within Internet of Things (IoT) environments using the RT-IoT 2022 dataset, which includes network traffic data from both normal and malicious activities across various IoT devices. By examining metrics like protocol usage, bandwidth, payload size, and flow characteristics, the study seeks to identify distinctive patterns associated with different types of attacks. These insights will contribute to developing more effective intrusion detection strategies, enhancing cybersecurity within IoT systems. Ethical considerations are minimal, as the dataset excludes sensitive information.
   </div>
 </div>
 
@@ -4857,272 +4855,9 @@ vertical-align: -.125em;
 </header>
 
 
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(pacman)) </span>
-<span id="cb1-2"><a href="#cb1-2"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;pacman&quot;</span>)</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># use this line for installing/loading</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse,</span>
-<span id="cb1-6"><a href="#cb1-6"></a>               glue,</span>
-<span id="cb1-7"><a href="#cb1-7"></a>               scales,</span>
-<span id="cb1-8"><a href="#cb1-8"></a>               ggplot2,</span>
-<span id="cb1-9"><a href="#cb1-9"></a>               countdown,</span>
-<span id="cb1-10"><a href="#cb1-10"></a>               grid,</span>
-<span id="cb1-11"><a href="#cb1-11"></a>               readr,</span>
-<span id="cb1-12"><a href="#cb1-12"></a>               dplyr) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="dataset" class="level2">
-<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/data.csv&quot;</span>)</span>
-<span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="fu">glimpse</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 123,117
-Columns: 77
-$ id.orig_p                &lt;dbl&gt; 38667, 51143, 44761, 60893, 51087, 48579, 540…
-$ id.resp_p                &lt;dbl&gt; 1883, 1883, 1883, 1883, 1883, 1883, 1883, 188…
-$ proto                    &lt;chr&gt; &quot;tcp&quot;, &quot;tcp&quot;, &quot;tcp&quot;, &quot;tcp&quot;, &quot;tcp&quot;, &quot;tcp&quot;, &quot;tc…
-$ service                  &lt;chr&gt; &quot;mqtt&quot;, &quot;mqtt&quot;, &quot;mqtt&quot;, &quot;mqtt&quot;, &quot;mqtt&quot;, &quot;mqtt…
-$ flow_duration            &lt;dbl&gt; 32.01160, 31.88358, 32.12405, 31.96106, 31.90…
-$ fwd_pkts_tot             &lt;dbl&gt; 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, …
-$ bwd_pkts_tot             &lt;dbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, …
-$ fwd_data_pkts_tot        &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, …
-$ bwd_data_pkts_tot        &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, …
-$ fwd_pkts_per_sec         &lt;dbl&gt; 0.281148, 0.282277, 0.280164, 0.281593, 0.282…
-$ bwd_pkts_per_sec         &lt;dbl&gt; 0.156193, 0.156821, 0.155647, 0.156440, 0.156…
-$ flow_pkts_per_sec        &lt;dbl&gt; 0.437341, 0.439097, 0.435811, 0.438033, 0.438…
-$ down_up_ratio            &lt;dbl&gt; 0.555556, 0.555556, 0.555556, 0.555556, 0.555…
-$ fwd_header_size_tot      &lt;dbl&gt; 296, 296, 296, 296, 296, 296, 296, 296, 296, …
-$ fwd_header_size_min      &lt;dbl&gt; 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 3…
-$ fwd_header_size_max      &lt;dbl&gt; 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 4…
-$ bwd_header_size_tot      &lt;dbl&gt; 168, 168, 168, 168, 168, 168, 168, 168, 168, …
-$ bwd_header_size_min      &lt;dbl&gt; 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 3…
-$ bwd_header_size_max      &lt;dbl&gt; 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 4…
-$ flow_FIN_flag_count      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ flow_SYN_flag_count      &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
-$ flow_RST_flag_count      &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
-$ fwd_PSH_flag_count       &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, …
-$ bwd_PSH_flag_count       &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, …
-$ flow_ACK_flag_count      &lt;dbl&gt; 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 1…
-$ fwd_URG_flag_count       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ fwd_pkts_payload.min     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ fwd_pkts_payload.max     &lt;dbl&gt; 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 3…
-$ fwd_pkts_payload.avg     &lt;dbl&gt; 8.444444, 8.444444, 8.222222, 8.222222, 8.444…
-$ fwd_pkts_payload.std     &lt;dbl&gt; 13.11594, 13.11594, 12.85280, 12.85280, 13.11…
-$ bwd_pkts_payload.min     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ bwd_pkts_payload.max     &lt;dbl&gt; 23, 23, 21, 21, 23, 23, 23, 23, 23, 23, 23, 2…
-$ bwd_pkts_payload.tot     &lt;dbl&gt; 32, 32, 30, 30, 32, 32, 32, 32, 32, 32, 32, 3…
-$ bwd_pkts_payload.avg     &lt;dbl&gt; 6.4, 6.4, 6.0, 6.0, 6.4, 6.4, 6.4, 6.4, 6.4, …
-$ bwd_pkts_payload.std     &lt;dbl&gt; 9.555103, 9.555103, 8.689074, 8.689074, 9.555…
-$ flow_pkts_payload.avg    &lt;dbl&gt; 7.714286, 7.714286, 7.428571, 7.428571, 7.714…
-$ flow_pkts_payload.std    &lt;dbl&gt; 11.61848, 11.61848, 11.22987, 11.22987, 11.61…
-$ fwd_iat.min              &lt;dbl&gt; 761.9858, 247.0016, 283.9565, 288.9633, 387.9…
-$ fwd_iat.max              &lt;dbl&gt; 29729183, 29855277, 29842149, 29913775, 29814…
-$ fwd_iat.tot              &lt;dbl&gt; 32011598, 31883584, 32124053, 31961063, 31902…
-$ fwd_iat.avg              &lt;dbl&gt; 4001450, 3985448, 4015507, 3995133, 3987795, …
-$ fwd_iat.std              &lt;dbl&gt; 10403074, 10463456, 10442378, 10482528, 10447…
-$ bwd_iat.min              &lt;dbl&gt; 4438.87711, 4214.04839, 2456.90346, 3933.9065…
-$ bwd_iat.max              &lt;dbl&gt; 1511694, 1576436, 1476049, 1551892, 1632083, …
-$ bwd_iat.tot              &lt;dbl&gt; 2026391, 1876261, 2013770, 1883784, 1935984, …
-$ bwd_iat.avg              &lt;dbl&gt; 506597.8, 469065.2, 503442.5, 470946.0, 48399…
-$ bwd_iat.std              &lt;dbl&gt; 680406.1, 741351.7, 660344.4, 724569.3, 76854…
-$ flow_iat.min             &lt;dbl&gt; 761.98578, 247.00165, 283.95653, 288.96332, 3…
-$ flow_iat.max             &lt;dbl&gt; 29729183, 29855277, 29842149, 29913775, 29814…
-$ flow_iat.tot             &lt;dbl&gt; 32011598, 31883584, 32124053, 31961063, 31902…
-$ flow_iat.avg             &lt;dbl&gt; 2462431, 2452583, 2471081, 2458543, 2454028, …
-$ flow_iat.std             &lt;dbl&gt; 8199747, 8242459, 8230593, 8257786, 8230584, …
-$ payload_bytes_per_second &lt;dbl&gt; 3.373777, 3.387323, 3.237450, 3.253959, 3.385…
-$ fwd_subflow_pkts         &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, …
-$ bwd_subflow_pkts         &lt;dbl&gt; 1.666667, 1.666667, 1.666667, 1.666667, 1.666…
-$ fwd_subflow_bytes        &lt;dbl&gt; 25.33333, 25.33333, 24.66667, 24.66667, 25.33…
-$ bwd_subflow_bytes        &lt;dbl&gt; 10.66667, 10.66667, 10.00000, 10.00000, 10.66…
-$ fwd_bulk_bytes           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ bwd_bulk_bytes           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ fwd_bulk_packets         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ bwd_bulk_packets         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ fwd_bulk_rate            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ bwd_bulk_rate            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ active.min               &lt;dbl&gt; 2282415, 2028307, 2281904, 2047288, 2087657, …
-$ active.max               &lt;dbl&gt; 2282415, 2028307, 2281904, 2047288, 2087657, …
-$ active.tot               &lt;dbl&gt; 2282415, 2028307, 2281904, 2047288, 2087657, …
-$ active.avg               &lt;dbl&gt; 2282415, 2028307, 2281904, 2047288, 2087657, …
-$ active.std               &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ idle.min                 &lt;dbl&gt; 29729183, 29855277, 29842149, 29913775, 29814…
-$ idle.max                 &lt;dbl&gt; 29729183, 29855277, 29842149, 29913775, 29814…
-$ idle.tot                 &lt;dbl&gt; 29729183, 29855277, 29842149, 29913775, 29814…
-$ idle.avg                 &lt;dbl&gt; 29729183, 29855277, 29842149, 29913775, 29814…
-$ idle.std                 &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ fwd_init_window_size     &lt;dbl&gt; 64240, 64240, 64240, 64240, 64240, 64240, 642…
-$ bwd_init_window_size     &lt;dbl&gt; 26847, 26847, 26847, 26847, 26847, 26847, 268…
-$ fwd_last_window_size     &lt;dbl&gt; 502, 502, 502, 502, 502, 502, 502, 502, 502, …
-$ Attack_type              &lt;chr&gt; &quot;MQTT_Publish&quot;, &quot;MQTT_Publish&quot;, &quot;MQTT_Publish…</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">summary</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   id.orig_p       id.resp_p        proto             service         
- Min.   :    0   Min.   :    0   Length:123117      Length:123117     
- 1st Qu.:17702   1st Qu.:   21   Class :character   Class :character  
- Median :37221   Median :   21   Mode  :character   Mode  :character  
- Mean   :34639   Mean   : 1014                                        
- 3rd Qu.:50971   3rd Qu.:   21                                        
- Max.   :65535   Max.   :65389                                        
- flow_duration       fwd_pkts_tot       bwd_pkts_tot      fwd_data_pkts_tot 
- Min.   :    0.00   Min.   :   0.000   Min.   :    0.00   Min.   :   0.000  
- 1st Qu.:    0.00   1st Qu.:   1.000   1st Qu.:    1.00   1st Qu.:   1.000  
- Median :    0.00   Median :   1.000   Median :    1.00   Median :   1.000  
- Mean   :    3.81   Mean   :   2.269   Mean   :    1.91   Mean   :   1.471  
- 3rd Qu.:    0.00   3rd Qu.:   1.000   3rd Qu.:    1.00   3rd Qu.:   1.000  
- Max.   :21728.34   Max.   :4345.000   Max.   :10112.00   Max.   :4345.000  
- bwd_data_pkts_tot  fwd_pkts_per_sec    bwd_pkts_per_sec    flow_pkts_per_sec  
- Min.   :    0.00   Min.   :      0.0   Min.   :      0.0   Min.   :      0.0  
- 1st Qu.:    0.00   1st Qu.:     74.5   1st Qu.:     72.9   1st Qu.:    149.1  
- Median :    0.00   Median : 246723.8   Median : 246723.8   Median : 493447.5  
- Mean   :    0.82   Mean   : 351806.3   Mean   : 351762.0   Mean   : 703568.3  
- 3rd Qu.:    0.00   3rd Qu.: 524288.0   3rd Qu.: 524288.0   3rd Qu.:1048576.0  
- Max.   :10105.00   Max.   :1048576.0   Max.   :1048576.0   Max.   :2097152.0  
- down_up_ratio    fwd_header_size_tot fwd_header_size_min fwd_header_size_max
- Min.   :0.0000   Min.   :    0.00    Min.   : 0.00       Min.   : 0.00      
- 1st Qu.:1.0000   1st Qu.:   20.00    1st Qu.:20.00       1st Qu.:20.00      
- Median :1.0000   Median :   20.00    Median :20.00       Median :20.00      
- Mean   :0.8546   Mean   :   53.89    Mean   :19.78       Mean   :20.65      
- 3rd Qu.:1.0000   3rd Qu.:   20.00    3rd Qu.:20.00       3rd Qu.:20.00      
- Max.   :6.0879   Max.   :69296.00    Max.   :44.00       Max.   :52.00      
- bwd_header_size_tot bwd_header_size_min bwd_header_size_max
- Min.   :     0.0    Min.   : 0.0        Min.   : 0.00      
- 1st Qu.:    20.0    1st Qu.:20.0        1st Qu.:20.00      
- Median :    20.0    Median :20.0        Median :20.00      
- Mean   :    46.6    Mean   :17.7        Mean   :18.43      
- 3rd Qu.:    20.0    3rd Qu.:20.0        3rd Qu.:20.00      
- Max.   :323592.0    Max.   :40.0        Max.   :44.00      
- flow_FIN_flag_count flow_SYN_flag_count flow_RST_flag_count fwd_PSH_flag_count
- Min.   : 0.0000     Min.   :0.0000      Min.   : 0.0000     Min.   :  0.0000  
- 1st Qu.: 0.0000     1st Qu.:1.0000      1st Qu.: 1.0000     1st Qu.:  0.0000  
- Median : 0.0000     Median :1.0000      Median : 1.0000     Median :  0.0000  
- Mean   : 0.1156     Mean   :0.9509      Mean   : 0.7965     Mean   :  0.3513  
- 3rd Qu.: 0.0000     3rd Qu.:1.0000      3rd Qu.: 1.0000     3rd Qu.:  0.0000  
- Max.   :10.0000     Max.   :8.0000      Max.   :10.0000     Max.   :864.0000  
- bwd_PSH_flag_count  flow_ACK_flag_count fwd_URG_flag_count
- Min.   :   0.0000   Min.   :    0.000   Min.   :0.00000   
- 1st Qu.:   0.0000   1st Qu.:    1.000   1st Qu.:0.00000   
- Median :   0.0000   Median :    1.000   Median :0.00000   
- Mean   :   0.3936   Mean   :    2.678   Mean   :0.01629   
- 3rd Qu.:   0.0000   3rd Qu.:    1.000   3rd Qu.:0.00000   
- Max.   :1446.0000   Max.   :11772.000   Max.   :1.00000   
- fwd_pkts_payload.min fwd_pkts_payload.max fwd_pkts_payload.avg
- Min.   :   0.00      Min.   :   0.0       Min.   :   0.0      
- 1st Qu.: 120.00      1st Qu.: 120.0       1st Qu.: 120.0      
- Median : 120.00      Median : 120.0       Median : 120.0      
- Mean   :  96.26      Mean   : 120.7       Mean   : 100.5      
- 3rd Qu.: 120.00      3rd Qu.: 120.0       3rd Qu.: 120.0      
- Max.   :1097.00      Max.   :1420.0       Max.   :1319.4      
- fwd_pkts_payload.std bwd_pkts_payload.min bwd_pkts_payload.max
- Min.   :  0.000      Min.   :   0.000     Min.   :   0.00     
- 1st Qu.:  0.000      1st Qu.:   0.000     1st Qu.:   0.00     
- Median :  0.000      Median :   0.000     Median :   0.00     
- Mean   :  8.108      Mean   :   3.817     Mean   :  52.41     
- 3rd Qu.:  0.000      3rd Qu.:   0.000     3rd Qu.:   0.00     
- Max.   :731.579      Max.   :1357.000     Max.   :5124.00     
- bwd_pkts_payload.tot bwd_pkts_payload.avg bwd_pkts_payload.std
- Min.   :       0     Min.   :   0.00      Min.   :   0.00     
- 1st Qu.:       0     1st Qu.:   0.00      1st Qu.:   0.00     
- Median :       0     Median :   0.00      Median :   0.00     
- Mean   :     513     Mean   :  18.79      Mean   :  20.55     
- 3rd Qu.:       0     3rd Qu.:   0.00      3rd Qu.:   0.00     
- Max.   :13610415     Max.   :1457.05      Max.   :1506.01     
- flow_pkts_payload.avg flow_pkts_payload.std  fwd_iat.min       
- Min.   :   0.00       Min.   :  0.00        Min.   :        0  
- 1st Qu.:  60.00       1st Qu.: 50.22        1st Qu.:        0  
- Median :  60.00       Median : 84.85        Median :        0  
- Mean   :  65.01       Mean   : 76.04        Mean   :     8843  
- 3rd Qu.:  60.00       3rd Qu.: 84.85        3rd Qu.:        0  
- Max.   :1156.08       Max.   :924.65        Max.   :300252571  
-  fwd_iat.max         fwd_iat.tot         fwd_iat.avg       
- Min.   :        0   Min.   :0.000e+00   Min.   :        0  
- 1st Qu.:        0   1st Qu.:0.000e+00   1st Qu.:        0  
- Median :        0   Median :0.000e+00   Median :        0  
- Mean   :  1721566   Mean   :3.780e+06   Mean   :   237357  
- 3rd Qu.:        0   3rd Qu.:0.000e+00   3rd Qu.:        0  
- Max.   :300252571   Max.   :2.173e+10   Max.   :300252571  
-  fwd_iat.std         bwd_iat.min        bwd_iat.max         bwd_iat.tot       
- Min.   :        0   Min.   :       0   Min.   :        0   Min.   :0.000e+00  
- 1st Qu.:        0   1st Qu.:       0   1st Qu.:        0   1st Qu.:0.000e+00  
- Median :        0   Median :       0   Median :        0   Median :0.000e+00  
- Mean   :   577557   Mean   :    3765   Mean   :   407727   Mean   :1.780e+06  
- 3rd Qu.:        0   3rd Qu.:       0   3rd Qu.:        0   3rd Qu.:0.000e+00  
- Max.   :212296532   Max.   :43196220   Max.   :300028179   Max.   :1.876e+10  
-  bwd_iat.avg         bwd_iat.std         flow_iat.min       flow_iat.max      
- Min.   :        0   Min.   :        0   Min.   :       0   Min.   :        0  
- 1st Qu.:        0   1st Qu.:        0   1st Qu.:       1   1st Qu.:        1  
- Median :        0   Median :        0   Median :       4   Median :        4  
- Mean   :    87652   Mean   :   147480   Mean   :    4283   Mean   :  1725999  
- 3rd Qu.:        0   3rd Qu.:        0   3rd Qu.:       5   3rd Qu.:        5  
- Max.   :150148934   Max.   :211961260   Max.   :43510042   Max.   :299999988  
-  flow_iat.tot        flow_iat.avg       flow_iat.std      
- Min.   :0.000e+00   Min.   :       0   Min.   :        0  
- 1st Qu.:1.000e+00   1st Qu.:       1   1st Qu.:        0  
- Median :4.000e+00   Median :       4   Median :        0  
- Mean   :3.811e+06   Mean   :  139654   Mean   :   450136  
- 3rd Qu.:5.000e+00   3rd Qu.:       5   3rd Qu.:        0  
- Max.   :2.173e+10   Max.   :72835758   Max.   :134122073  
- payload_bytes_per_second fwd_subflow_pkts  bwd_subflow_pkts  
- Min.   :        0        Min.   :  0.000   Min.   :   0.000  
- 1st Qu.:     2581        1st Qu.:  1.000   1st Qu.:   1.000  
- Median : 29606852        Median :  1.000   Median :   1.000  
- Mean   : 41053452        Mean   :  1.552   Mean   :   1.338  
- 3rd Qu.: 55924053        3rd Qu.:  1.000   3rd Qu.:   1.000  
- Max.   :125829120        Max.   :276.833   Max.   :1685.333  
- fwd_subflow_bytes bwd_subflow_bytes   fwd_bulk_bytes     bwd_bulk_bytes   
- Min.   :    0.0   Min.   :      0.0   Min.   :     0.0   Min.   :      0  
- 1st Qu.:  120.0   1st Qu.:      0.0   1st Qu.:     0.0   1st Qu.:      0  
- Median :  120.0   Median :      0.0   Median :     0.0   Median :      0  
- Mean   :  136.5   Mean   :    217.5   Mean   :    19.2   Mean   :    155  
- 3rd Qu.:  120.0   3rd Qu.:      0.0   3rd Qu.:     0.0   3rd Qu.:      0  
- Max.   :52067.8   Max.   :2268402.5   Max.   :465095.0   Max.   :6805208  
- fwd_bulk_packets   bwd_bulk_packets   fwd_bulk_rate      bwd_bulk_rate     
- Min.   :  0.0000   Min.   :   0.000   Min.   :       0   Min.   :       0  
- 1st Qu.:  0.0000   1st Qu.:   0.000   1st Qu.:       0   1st Qu.:       0  
- Median :  0.0000   Median :   0.000   Median :       0   Median :       0  
- Mean   :  0.0241   Mean   :   0.131   Mean   :    3836   Mean   :   48415  
- 3rd Qu.:  0.0000   3rd Qu.:   0.000   3rd Qu.:       0   3rd Qu.:       0  
- Max.   :343.0000   Max.   :5052.500   Max.   :46336283   Max.   :28300874  
-   active.min          active.max          active.tot       
- Min.   :        0   Min.   :        0   Min.   :0.000e+00  
- 1st Qu.:        1   1st Qu.:        1   1st Qu.:1.000e+00  
- Median :        4   Median :        4   Median :4.000e+00  
- Mean   :   133155   Mean   :   178590   Mean   :2.929e+05  
- 3rd Qu.:        5   3rd Qu.:        5   3rd Qu.:5.000e+00  
- Max.   :312507974   Max.   :848097909   Max.   :2.945e+09  
-   active.avg          active.std           idle.min        
- Min.   :        0   Min.   :        0   Min.   :        0  
- 1st Qu.:        1   1st Qu.:        0   1st Qu.:        0  
- Median :        4   Median :        0   Median :        0  
- Mean   :   148135   Mean   :    23536   Mean   :  1616655  
- 3rd Qu.:        5   3rd Qu.:        0   3rd Qu.:        0  
- Max.   :437493062   Max.   :477486236   Max.   :299999988  
-    idle.max            idle.tot            idle.avg        
- Min.   :        0   Min.   :0.000e+00   Min.   :        0  
- 1st Qu.:        0   1st Qu.:0.000e+00   1st Qu.:        0  
- Median :        0   Median :0.000e+00   Median :        0  
- Mean   :  1701956   Mean   :3.518e+06   Mean   :  1664985  
- 3rd Qu.:        0   3rd Qu.:0.000e+00   3rd Qu.:        0  
- Max.   :299999988   Max.   :2.097e+10   Max.   :299999988  
-    idle.std         fwd_init_window_size bwd_init_window_size
- Min.   :        0   Min.   :    0        Min.   :    0       
- 1st Qu.:        0   1st Qu.:   64        1st Qu.:    0       
- Median :        0   Median :   64        Median :    0       
- Mean   :    45502   Mean   : 6119        Mean   : 2740       
- 3rd Qu.:        0   3rd Qu.:   64        3rd Qu.:    0       
- Max.   :120802871   Max.   :65535        Max.   :65535       
- fwd_last_window_size Attack_type       
- Min.   :    0.0      Length:123117     
- 1st Qu.:   64.0      Class :character  
- Median :   64.0      Mode  :character  
- Mean   :  751.6                        
- 3rd Qu.:   64.0                        
- Max.   :65535.0                        </code></pre>
-</div>
-</div>
+<section id="questions-1-explonatory" class="level3">
+<h3 class="anchored" data-anchor-id="questions-1-explonatory">Questions 1 Explonatory</h3>
+</section>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
 <p>The dataset consists of 123,117 rows and 77 columns, capturing network traffic flow data. Key features include:</p>
@@ -5148,7 +4883,6 @@ $ Attack_type              &lt;chr&gt; &quot;MQTT_Publish&quot;, &quot;MQTT_Publ
 <p>The RT-IoT2022 dataset was specifically created to train and test the IDS. The dataset comprises normal and attack traffic, captured using real-time IoT devices like ThingSpeak-LED, MQTT-Temp, Amazon Alexa, and Wipro Bulb. The authors used a router setup to connect both victim (IoT devices) and attacker devices, capturing network traffic through the open-source tool Wireshark, which recorded and converted traces into PCAP files.</p>
 <p><strong>Attack Simulation:</strong> SSH Brute-Force Attack: Metasploit’s modules were employed to launch SSH brute-force attacks after scanning for open ports using Nmap. DDoS Attack: The Hping3 tool from Kali Linux was utilized to generate DDoS attacks, transmitting thousands of packets to simulate high traffic.</p>
 <p><strong>Feature Engineering:</strong> The collected PCAP files were processed using the CICFlowmeter tool, converting the network traffic data into bidirectional flow features for analysis. Irrelevant information like source and destination addresses were removed, and categorical features were numerically encoded to prevent overfitting. This method ensured a realistic and comprehensive dataset, encompassing both benign and malicious IoT traffic, critical for developing and testing the QAE IDS model.</p>
-</section>
 </section>
 <section id="questions" class="level2">
 <h2 class="anchored" data-anchor-id="questions">Questions</h2>
@@ -5845,131 +5579,102 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
-<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">---</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="an">title:</span><span class="co"> &quot;IOT Network Intrusion Detection Analysis&quot;</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="an">subtitle:</span><span class="co"> &quot;Proposal&quot;</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="an">author:</span><span class="co"> </span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="co">  - name: &quot;ViZZards&quot;</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">    affiliations:</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="co">      - name: &quot;School of Information, University of Arizona&quot;</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="an">description:</span><span class="co"> &quot;Analysis and Visualisation of various types of attacks in IOT network&quot;</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="an">format:</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="co">  html:</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="co">    code-tools: true</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="co">    code-overflow: wrap</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="co">    code-line-numbers: true</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a><span class="co">    embed-resources: true</span></span>
-<span id="cb6-15"><a href="#cb6-15"></a><span class="an">editor:</span><span class="co"> visual</span></span>
-<span id="cb6-16"><a href="#cb6-16"></a><span class="an">code-annotations:</span><span class="co"> hover</span></span>
-<span id="cb6-17"><a href="#cb6-17"></a><span class="an">execute:</span></span>
-<span id="cb6-18"><a href="#cb6-18"></a><span class="co">  warning: false</span></span>
-<span id="cb6-19"><a href="#cb6-19"></a><span class="co">---</span></span>
-<span id="cb6-20"><a href="#cb6-20"></a></span>
-<span id="cb6-23"><a href="#cb6-23"></a><span class="in">```{r}</span></span>
-<span id="cb6-24"><a href="#cb6-24"></a><span class="co">#| label: load-pkgs</span></span>
-<span id="cb6-25"><a href="#cb6-25"></a><span class="co">#| message: false</span></span>
-<span id="cb6-26"><a href="#cb6-26"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(pacman)) </span>
-<span id="cb6-27"><a href="#cb6-27"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;pacman&quot;</span>)</span>
-<span id="cb6-28"><a href="#cb6-28"></a></span>
-<span id="cb6-29"><a href="#cb6-29"></a><span class="co"># use this line for installing/loading</span></span>
-<span id="cb6-30"><a href="#cb6-30"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse,</span>
-<span id="cb6-31"><a href="#cb6-31"></a>               glue,</span>
-<span id="cb6-32"><a href="#cb6-32"></a>               scales,</span>
-<span id="cb6-33"><a href="#cb6-33"></a>               ggplot2,</span>
-<span id="cb6-34"><a href="#cb6-34"></a>               countdown,</span>
-<span id="cb6-35"><a href="#cb6-35"></a>               grid,</span>
-<span id="cb6-36"><a href="#cb6-36"></a>               readr,</span>
-<span id="cb6-37"><a href="#cb6-37"></a>               dplyr) </span>
-<span id="cb6-38"><a href="#cb6-38"></a></span>
-<span id="cb6-39"><a href="#cb6-39"></a><span class="in">```</span></span>
-<span id="cb6-40"><a href="#cb6-40"></a></span>
-<span id="cb6-41"><a href="#cb6-41"></a><span class="fu">## Dataset</span></span>
-<span id="cb6-42"><a href="#cb6-42"></a></span>
-<span id="cb6-45"><a href="#cb6-45"></a><span class="in">```{r}</span></span>
-<span id="cb6-46"><a href="#cb6-46"></a><span class="co">#| label: load-dataset</span></span>
-<span id="cb6-47"><a href="#cb6-47"></a><span class="co">#| message: false</span></span>
-<span id="cb6-48"><a href="#cb6-48"></a></span>
-<span id="cb6-49"><a href="#cb6-49"></a></span>
-<span id="cb6-50"><a href="#cb6-50"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/data.csv&quot;</span>)</span>
-<span id="cb6-51"><a href="#cb6-51"></a></span>
-<span id="cb6-52"><a href="#cb6-52"></a><span class="fu">glimpse</span>(data)</span>
-<span id="cb6-53"><a href="#cb6-53"></a><span class="fu">summary</span>(data)</span>
-<span id="cb6-54"><a href="#cb6-54"></a><span class="in">```</span></span>
-<span id="cb6-55"><a href="#cb6-55"></a></span>
-<span id="cb6-56"><a href="#cb6-56"></a><span class="fu">### Description</span></span>
-<span id="cb6-57"><a href="#cb6-57"></a></span>
-<span id="cb6-58"><a href="#cb6-58"></a>The dataset consists of 123,117 rows and 77 columns, capturing network traffic flow data. Key features include:</span>
-<span id="cb6-59"><a href="#cb6-59"></a></span>
-<span id="cb6-60"><a href="#cb6-60"></a><span class="ss">-   </span>**Network Identifiers:** Columns like id.orig_p and id.resp_p capture originating and responding port IDs.</span>
-<span id="cb6-61"><a href="#cb6-61"></a></span>
-<span id="cb6-62"><a href="#cb6-62"></a><span class="ss">-   </span>**Protocol and Service Information:** Columns such as proto (protocol) and service (e.g., MQTT) identify the communication protocol and services in use.</span>
-<span id="cb6-63"><a href="#cb6-63"></a></span>
-<span id="cb6-64"><a href="#cb6-64"></a><span class="ss">-   </span>**Traffic Statistics:** These include metrics like packet counts (fwd_pkts_tot, bwd_pkts_tot), packet rates (fwd_pkts_per_sec), and header sizes.</span>
-<span id="cb6-65"><a href="#cb6-65"></a></span>
-<span id="cb6-66"><a href="#cb6-66"></a><span class="ss">-   </span>**Flow Characteristics:** Features like flow duration (flow_duration), and flags such as flow_FIN_flag_count, flow_ACK_flag_count,flow_SYN_flag_count flow_RST_flag_count capture communication patterns.</span>
-<span id="cb6-67"><a href="#cb6-67"></a></span>
-<span id="cb6-68"><a href="#cb6-68"></a><span class="ss">-   </span>**Attack Type:** The Attack_type column labels the type of attack or event detected (e.g., MQTT_Publish).</span>
-<span id="cb6-69"><a href="#cb6-69"></a></span>
-<span id="cb6-70"><a href="#cb6-70"></a><span class="ss">-   </span>**Payload Information:** This payload information describes the size of packets that is flowing through the network during an attack vs normal traffic for eg : fwd_pkts_payload.avg,fwd_pkts_payload.min, fwd_pkts_payload.max which will be higher during an attack.</span>
-<span id="cb6-71"><a href="#cb6-71"></a></span>
-<span id="cb6-72"><a href="#cb6-72"></a><span class="ss">-   </span>**Bandwidth Information:** The amount of data flowing through IOT infrastructure varies during different type of attack for e.g. during DDOS slowloris is denial of service attack where the data flow is much higher in comparison to normal traffic. So these variables are used for bandwidth information fwd_pkts_tot, bwd_pkts_tot, fwd_data_pkts_tot, bwd_data_pkts_tot,fwd_pkts_per_sec, bwd_pkts_per_sec, flow_pkts_per_sec.</span>
-<span id="cb6-73"><a href="#cb6-73"></a></span>
-<span id="cb6-74"><a href="#cb6-74"></a><span class="ss">-   </span>**Inter-arrival time information:** Variables like fwd_iat.min, fwd_iat.avg, flow_iat.min can be used to determine what is the time difference between two packets which corresponds to payload information as the payload gets bigger IAT and IAT flow time will be larger.</span>
-<span id="cb6-75"><a href="#cb6-75"></a></span>
-<span id="cb6-76"><a href="#cb6-76"></a><span class="ss">-   </span>**Idle vs In-use information:** active.avg , idle.avg will provide the information about the IOT devices if it is forwarding or not forwarding the network traffic.</span>
-<span id="cb6-77"><a href="#cb6-77"></a></span>
-<span id="cb6-78"><a href="#cb6-78"></a>The dataset appears to be useful for studying network behavior, identifying attacks, and analyzing flow-based communication statistics.</span>
-<span id="cb6-79"><a href="#cb6-79"></a></span>
-<span id="cb6-80"><a href="#cb6-80"></a><span class="fu">### Source of the data</span></span>
-<span id="cb6-81"><a href="#cb6-81"></a></span>
-<span id="cb6-82"><a href="#cb6-82"></a>The RT-IoT 2022 dataset, available from the UCI Machine Learning Repository, is designed for research on detecting attacks in IoT (Internet of Things) systems. It contains network flow data from various IoT devices and captures both normal and malicious traffic, making it valuable for studying cybersecurity in IoT environments. The dataset includes features such as packet counts, traffic flow statistics, and communication protocols, which are essential for intrusion detection and anomaly analysis in smart systems. Researchers often use it to train machine learning models to detect cyberattacks.</span>
-<span id="cb6-83"><a href="#cb6-83"></a></span>
-<span id="cb6-84"><a href="#cb6-84"></a><span class="fu">### Dataset Generation</span></span>
-<span id="cb6-85"><a href="#cb6-85"></a></span>
-<span id="cb6-86"><a href="#cb6-86"></a>The RT-IoT2022 dataset was specifically created to train and test the IDS. The dataset comprises normal and attack traffic, captured using real-time IoT devices like ThingSpeak-LED, MQTT-Temp, Amazon Alexa, and Wipro Bulb. The authors used a router setup to connect both victim (IoT devices) and attacker devices, capturing network traffic through the open-source tool Wireshark, which recorded and converted traces into PCAP files.</span>
-<span id="cb6-87"><a href="#cb6-87"></a></span>
-<span id="cb6-88"><a href="#cb6-88"></a>**Attack Simulation:** SSH Brute-Force Attack: Metasploit’s modules were employed to launch SSH brute-force attacks after scanning for open ports using Nmap. DDoS Attack: The Hping3 tool from Kali Linux was utilized to generate DDoS attacks, transmitting thousands of packets to simulate high traffic.</span>
-<span id="cb6-89"><a href="#cb6-89"></a></span>
-<span id="cb6-90"><a href="#cb6-90"></a>**Feature Engineering:** The collected PCAP files were processed using the CICFlowmeter tool, converting the network traffic data into bidirectional flow features for analysis. Irrelevant information like source and destination addresses were removed, and categorical features were numerically encoded to prevent overfitting. This method ensured a realistic and comprehensive dataset, encompassing both benign and malicious IoT traffic, critical for developing and testing the QAE IDS model.</span>
-<span id="cb6-91"><a href="#cb6-91"></a></span>
-<span id="cb6-92"><a href="#cb6-92"></a><span class="fu">## Questions</span></span>
-<span id="cb6-93"><a href="#cb6-93"></a></span>
-<span id="cb6-94"><a href="#cb6-94"></a>The following are the question will be used for our project:-</span>
-<span id="cb6-95"><a href="#cb6-95"></a></span>
-<span id="cb6-96"><a href="#cb6-96"></a><span class="ss">-   </span>Which protocol, service and port number is used in different type of attack scenarios to avoid any future network cyber attacks ?</span>
-<span id="cb6-97"><a href="#cb6-97"></a></span>
-<span id="cb6-98"><a href="#cb6-98"></a><span class="ss">-   </span>How do different type of attack show unique patterns across bandwidth, inter arrival time, payload and flow characteristics ? Are these patterns showing any reliable distinctions between attacks ?</span>
-<span id="cb6-99"><a href="#cb6-99"></a></span>
-<span id="cb6-100"><a href="#cb6-100"></a><span class="ss">-   </span>Which combinations of dimensions is responsible for the different type of attack ?</span>
-<span id="cb6-101"><a href="#cb6-101"></a></span>
-<span id="cb6-102"><a href="#cb6-102"></a><span class="fu">## Analysis plan</span></span>
-<span id="cb6-103"><a href="#cb6-103"></a></span>
-<span id="cb6-104"><a href="#cb6-104"></a>Question 1:</span>
-<span id="cb6-105"><a href="#cb6-105"></a></span>
-<span id="cb6-106"><a href="#cb6-106"></a><span class="ss">-   </span>Variable proto , service and id.resp_p will be used and compared with different type of attacks vs when actual devices is talking over same protocol, service and port number.</span>
-<span id="cb6-107"><a href="#cb6-107"></a></span>
-<span id="cb6-108"><a href="#cb6-108"></a>Question 2:</span>
-<span id="cb6-109"><a href="#cb6-109"></a></span>
-<span id="cb6-110"><a href="#cb6-110"></a><span class="ss">-   </span>A relationship between variables that corresponds to bandwidth information for e.g. fwd_pkts_tot, bwd_pkts_tot, fwd_data_pkts_tot, bwd_data_pkts_tot, fwd_pkts_per_sec, bwd_pkts_per_sec, flow_pkts_per_sec with attack type will be determined. This will define the clear relationship of bandwidth during an attack</span>
-<span id="cb6-111"><a href="#cb6-111"></a></span>
-<span id="cb6-112"><a href="#cb6-112"></a><span class="ss">-   </span>Inter-arrival time information which will use variables like fwd_iat.min, fwd_iat.avg, flow_iat.min to make similar relationship during an attack vs normal operation.</span>
-<span id="cb6-113"><a href="#cb6-113"></a></span>
-<span id="cb6-114"><a href="#cb6-114"></a><span class="ss">-   </span>Every attack type prohibit different payload behaviour. We will use the variables fwd_pkts_payload.avg,fwd_pkts_payload.min, fwd_pkts_payload.max to find out extreme large packet and empty packet</span>
-<span id="cb6-115"><a href="#cb6-115"></a></span>
-<span id="cb6-116"><a href="#cb6-116"></a><span class="ss">-   </span>DDOS slowloris attack uses TCP SYNC message flooding through the server with the flow characterstics information we will compare number of TCP SYNC message with the number of other TCP messages</span>
-<span id="cb6-117"><a href="#cb6-117"></a></span>
-<span id="cb6-118"><a href="#cb6-118"></a>Question 3:</span>
-<span id="cb6-119"><a href="#cb6-119"></a></span>
-<span id="cb6-120"><a href="#cb6-120"></a><span class="ss">-   </span>With comparison of different variables in attack scenarios we will determine who and how many dimensions are affected during attacks</span>
-<span id="cb6-121"><a href="#cb6-121"></a></span>
-<span id="cb6-122"><a href="#cb6-122"></a><span class="fu">## Ethical concerns</span></span>
-<span id="cb6-123"><a href="#cb6-123"></a></span>
-<span id="cb6-124"><a href="#cb6-124"></a>Our dataset do not have any ethical concerns because basic information of internal organization is not included. We are visualising and analysing without source and destination specified which has its pros and cons.</span>
-<span id="cb6-125"><a href="#cb6-125"></a></span>
-<span id="cb6-126"><a href="#cb6-126"></a><span class="fu">## Citations</span></span>
-<span id="cb6-127"><a href="#cb6-127"></a></span>
-<span id="cb6-128"><a href="#cb6-128"></a>| Dataset : <span class="co">[</span><span class="ot">UCI Machine Learning Repository</span><span class="co">](https://archive.ics.uci.edu/dataset/942/rt-iot2022)</span></span>
-</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="an">title:</span><span class="co"> &quot;IOT Network Intrusion Detection Analysis&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="an">subtitle:</span><span class="co"> &quot;Proposal&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="an">author:</span><span class="co"> </span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">  - name: &quot;ViZZards&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">    affiliations:</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">      - name: &quot;School of Information, University of Arizona&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="an">description:</span><span class="co"> &quot;This project aims to analyze and visualize network attacks within Internet of Things (IoT) environments using the RT-IoT 2022 dataset, which includes network traffic data from both normal and malicious activities across various IoT devices. By examining metrics like protocol usage, bandwidth, payload size, and flow characteristics, the study seeks to identify distinctive patterns associated with different types of attacks. These insights will contribute to developing more effective intrusion detection strategies, enhancing cybersecurity within IoT systems. Ethical considerations are minimal, as the dataset excludes sensitive information.&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="an">format:</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co">  html:</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co">    code-tools: true</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co">    code-overflow: wrap</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="co">    code-line-numbers: true</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co">    embed-resources: true</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="an">code-annotations:</span><span class="co"> hover</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="an">execute:</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="co">  warning: false</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="co">---</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a></span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="fu">### Questions 1 Explonatory</span></span>
+<span id="cb1-23"><a href="#cb1-23"></a></span>
+<span id="cb1-24"><a href="#cb1-24"></a><span class="fu">### Description</span></span>
+<span id="cb1-25"><a href="#cb1-25"></a></span>
+<span id="cb1-26"><a href="#cb1-26"></a>The dataset consists of 123,117 rows and 77 columns, capturing network traffic flow data. Key features include:</span>
+<span id="cb1-27"><a href="#cb1-27"></a></span>
+<span id="cb1-28"><a href="#cb1-28"></a><span class="ss">-   </span>**Network Identifiers:** Columns like id.orig_p and id.resp_p capture originating and responding port IDs.</span>
+<span id="cb1-29"><a href="#cb1-29"></a></span>
+<span id="cb1-30"><a href="#cb1-30"></a><span class="ss">-   </span>**Protocol and Service Information:** Columns such as proto (protocol) and service (e.g., MQTT) identify the communication protocol and services in use.</span>
+<span id="cb1-31"><a href="#cb1-31"></a></span>
+<span id="cb1-32"><a href="#cb1-32"></a><span class="ss">-   </span>**Traffic Statistics:** These include metrics like packet counts (fwd_pkts_tot, bwd_pkts_tot), packet rates (fwd_pkts_per_sec), and header sizes.</span>
+<span id="cb1-33"><a href="#cb1-33"></a></span>
+<span id="cb1-34"><a href="#cb1-34"></a><span class="ss">-   </span>**Flow Characteristics:** Features like flow duration (flow_duration), and flags such as flow_FIN_flag_count, flow_ACK_flag_count,flow_SYN_flag_count flow_RST_flag_count capture communication patterns.</span>
+<span id="cb1-35"><a href="#cb1-35"></a></span>
+<span id="cb1-36"><a href="#cb1-36"></a><span class="ss">-   </span>**Attack Type:** The Attack_type column labels the type of attack or event detected (e.g., MQTT_Publish).</span>
+<span id="cb1-37"><a href="#cb1-37"></a></span>
+<span id="cb1-38"><a href="#cb1-38"></a><span class="ss">-   </span>**Payload Information:** This payload information describes the size of packets that is flowing through the network during an attack vs normal traffic for eg : fwd_pkts_payload.avg,fwd_pkts_payload.min, fwd_pkts_payload.max which will be higher during an attack.</span>
+<span id="cb1-39"><a href="#cb1-39"></a></span>
+<span id="cb1-40"><a href="#cb1-40"></a><span class="ss">-   </span>**Bandwidth Information:** The amount of data flowing through IOT infrastructure varies during different type of attack for e.g. during DDOS slowloris is denial of service attack where the data flow is much higher in comparison to normal traffic. So these variables are used for bandwidth information fwd_pkts_tot, bwd_pkts_tot, fwd_data_pkts_tot, bwd_data_pkts_tot,fwd_pkts_per_sec, bwd_pkts_per_sec, flow_pkts_per_sec.</span>
+<span id="cb1-41"><a href="#cb1-41"></a></span>
+<span id="cb1-42"><a href="#cb1-42"></a><span class="ss">-   </span>**Inter-arrival time information:** Variables like fwd_iat.min, fwd_iat.avg, flow_iat.min can be used to determine what is the time difference between two packets which corresponds to payload information as the payload gets bigger IAT and IAT flow time will be larger.</span>
+<span id="cb1-43"><a href="#cb1-43"></a></span>
+<span id="cb1-44"><a href="#cb1-44"></a><span class="ss">-   </span>**Idle vs In-use information:** active.avg , idle.avg will provide the information about the IOT devices if it is forwarding or not forwarding the network traffic.</span>
+<span id="cb1-45"><a href="#cb1-45"></a></span>
+<span id="cb1-46"><a href="#cb1-46"></a>The dataset appears to be useful for studying network behavior, identifying attacks, and analyzing flow-based communication statistics.</span>
+<span id="cb1-47"><a href="#cb1-47"></a></span>
+<span id="cb1-48"><a href="#cb1-48"></a><span class="fu">### Source of the data</span></span>
+<span id="cb1-49"><a href="#cb1-49"></a></span>
+<span id="cb1-50"><a href="#cb1-50"></a>The RT-IoT 2022 dataset, available from the UCI Machine Learning Repository, is designed for research on detecting attacks in IoT (Internet of Things) systems. It contains network flow data from various IoT devices and captures both normal and malicious traffic, making it valuable for studying cybersecurity in IoT environments. The dataset includes features such as packet counts, traffic flow statistics, and communication protocols, which are essential for intrusion detection and anomaly analysis in smart systems. Researchers often use it to train machine learning models to detect cyberattacks.</span>
+<span id="cb1-51"><a href="#cb1-51"></a></span>
+<span id="cb1-52"><a href="#cb1-52"></a><span class="fu">### Dataset Generation</span></span>
+<span id="cb1-53"><a href="#cb1-53"></a></span>
+<span id="cb1-54"><a href="#cb1-54"></a>The RT-IoT2022 dataset was specifically created to train and test the IDS. The dataset comprises normal and attack traffic, captured using real-time IoT devices like ThingSpeak-LED, MQTT-Temp, Amazon Alexa, and Wipro Bulb. The authors used a router setup to connect both victim (IoT devices) and attacker devices, capturing network traffic through the open-source tool Wireshark, which recorded and converted traces into PCAP files.</span>
+<span id="cb1-55"><a href="#cb1-55"></a></span>
+<span id="cb1-56"><a href="#cb1-56"></a>**Attack Simulation:** SSH Brute-Force Attack: Metasploit’s modules were employed to launch SSH brute-force attacks after scanning for open ports using Nmap. DDoS Attack: The Hping3 tool from Kali Linux was utilized to generate DDoS attacks, transmitting thousands of packets to simulate high traffic.</span>
+<span id="cb1-57"><a href="#cb1-57"></a></span>
+<span id="cb1-58"><a href="#cb1-58"></a>**Feature Engineering:** The collected PCAP files were processed using the CICFlowmeter tool, converting the network traffic data into bidirectional flow features for analysis. Irrelevant information like source and destination addresses were removed, and categorical features were numerically encoded to prevent overfitting. This method ensured a realistic and comprehensive dataset, encompassing both benign and malicious IoT traffic, critical for developing and testing the QAE IDS model.</span>
+<span id="cb1-59"><a href="#cb1-59"></a></span>
+<span id="cb1-60"><a href="#cb1-60"></a><span class="fu">## Questions</span></span>
+<span id="cb1-61"><a href="#cb1-61"></a></span>
+<span id="cb1-62"><a href="#cb1-62"></a>The following are the question will be used for our project:-</span>
+<span id="cb1-63"><a href="#cb1-63"></a></span>
+<span id="cb1-64"><a href="#cb1-64"></a><span class="ss">-   </span>Which protocol, service and port number is used in different type of attack scenarios to avoid any future network cyber attacks ?</span>
+<span id="cb1-65"><a href="#cb1-65"></a></span>
+<span id="cb1-66"><a href="#cb1-66"></a><span class="ss">-   </span>How do different type of attack show unique patterns across bandwidth, inter arrival time, payload and flow characteristics ? Are these patterns showing any reliable distinctions between attacks ?</span>
+<span id="cb1-67"><a href="#cb1-67"></a></span>
+<span id="cb1-68"><a href="#cb1-68"></a><span class="ss">-   </span>Which combinations of dimensions is responsible for the different type of attack ?</span>
+<span id="cb1-69"><a href="#cb1-69"></a></span>
+<span id="cb1-70"><a href="#cb1-70"></a><span class="fu">## Analysis plan</span></span>
+<span id="cb1-71"><a href="#cb1-71"></a></span>
+<span id="cb1-72"><a href="#cb1-72"></a>Question 1:</span>
+<span id="cb1-73"><a href="#cb1-73"></a></span>
+<span id="cb1-74"><a href="#cb1-74"></a><span class="ss">-   </span>Variable proto , service and id.resp_p will be used and compared with different type of attacks vs when actual devices is talking over same protocol, service and port number.</span>
+<span id="cb1-75"><a href="#cb1-75"></a></span>
+<span id="cb1-76"><a href="#cb1-76"></a>Question 2:</span>
+<span id="cb1-77"><a href="#cb1-77"></a></span>
+<span id="cb1-78"><a href="#cb1-78"></a><span class="ss">-   </span>A relationship between variables that corresponds to bandwidth information for e.g. fwd_pkts_tot, bwd_pkts_tot, fwd_data_pkts_tot, bwd_data_pkts_tot, fwd_pkts_per_sec, bwd_pkts_per_sec, flow_pkts_per_sec with attack type will be determined. This will define the clear relationship of bandwidth during an attack</span>
+<span id="cb1-79"><a href="#cb1-79"></a></span>
+<span id="cb1-80"><a href="#cb1-80"></a><span class="ss">-   </span>Inter-arrival time information which will use variables like fwd_iat.min, fwd_iat.avg, flow_iat.min to make similar relationship during an attack vs normal operation.</span>
+<span id="cb1-81"><a href="#cb1-81"></a></span>
+<span id="cb1-82"><a href="#cb1-82"></a><span class="ss">-   </span>Every attack type prohibit different payload behaviour. We will use the variables fwd_pkts_payload.avg,fwd_pkts_payload.min, fwd_pkts_payload.max to find out extreme large packet and empty packet</span>
+<span id="cb1-83"><a href="#cb1-83"></a></span>
+<span id="cb1-84"><a href="#cb1-84"></a><span class="ss">-   </span>DDOS slowloris attack uses TCP SYNC message flooding through the server with the flow characterstics information we will compare number of TCP SYNC message with the number of other TCP messages</span>
+<span id="cb1-85"><a href="#cb1-85"></a></span>
+<span id="cb1-86"><a href="#cb1-86"></a>Question 3:</span>
+<span id="cb1-87"><a href="#cb1-87"></a></span>
+<span id="cb1-88"><a href="#cb1-88"></a><span class="ss">-   </span>With comparison of different variables in attack scenarios we will determine who and how many dimensions are affected during attacks</span>
+<span id="cb1-89"><a href="#cb1-89"></a></span>
+<span id="cb1-90"><a href="#cb1-90"></a><span class="fu">## Ethical concerns</span></span>
+<span id="cb1-91"><a href="#cb1-91"></a></span>
+<span id="cb1-92"><a href="#cb1-92"></a>Our dataset do not have any ethical concerns because basic information of internal organization is not included. We are visualising and analysing without source and destination specified which has its pros and cons.</span>
+<span id="cb1-93"><a href="#cb1-93"></a></span>
+<span id="cb1-94"><a href="#cb1-94"></a><span class="fu">## Citations</span></span>
+<span id="cb1-95"><a href="#cb1-95"></a></span>
+<span id="cb1-96"><a href="#cb1-96"></a>| Dataset : <span class="co">[</span><span class="ot">UCI Machine Learning Repository</span><span class="co">](https://archive.ics.uci.edu/dataset/942/rt-iot2022)</span></span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
