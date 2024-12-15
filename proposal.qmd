@@ -19,19 +19,6 @@ execute:
   warning: false
 ---
 
-## Dataset
-
-```{r}
-#| label: load-dataset
-#| message: false
-
-
-data <- read_csv("data/data.csv")
-
-#glimpse(data)
-summary(data)
-```
-
 ### Questions 1 Explonatory
 
 ### Description
